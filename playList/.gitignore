@@ -52,3 +52,5 @@ coverage/
 # Example Files
 app-example
 
+# IDEs
+.idea/
