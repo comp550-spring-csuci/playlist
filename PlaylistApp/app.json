@@ -1,0 +1,8 @@
+{
+  "expo": {
+    "name": "PlaylistApp",
+    "slug": "PlaylistApp",
+    "platforms": ["ios", "android", "web"],
+    "version": "1.0.0"
+  }
+}
