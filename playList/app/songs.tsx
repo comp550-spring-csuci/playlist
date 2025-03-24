@@ -24,7 +24,7 @@ const Songs = () => {
     }
 
     loadSongs();
-}, []);
+  }, []);
 
   if (loading) {
     return (
@@ -43,6 +43,17 @@ const Songs = () => {
         <Text style={styles.headerTitle}>Songs</Text>
       </View>
 
+      {/* "Your Playlist" Button on top of FlatList */}
+      <View style={styles.playlistButtonContainer}>
+        <TouchableOpacity
+          onPress={() => router.push("/existingPlaylistScreen")} // Navigate to ExistingPlaylistScreen
+          style={styles.playlistButton}
+        >
+          <Text style={styles.playlistButtonText}>Your Playlist</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* FlatList to display the songs */}
       <FlatList
         data={songs}
         keyExtractor={(item) => item.track.id}
@@ -67,6 +78,6 @@ const Songs = () => {
       />
     </SafeAreaView>
   );
-}
+};
 
 export default Songs;

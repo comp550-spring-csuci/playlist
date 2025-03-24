@@ -169,5 +169,87 @@ export const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 14,
     fontWeight: "bold",
-  }
+  },
+  // Centered button styles for "Your Playlist"
+  // Playlist Button styles
+  playlistButtonContainer: {
+    alignItems: "center", // Centers the button horizontally
+    marginVertical: 5,// Adds space above the button
+    marginBottom: 20, 
+  },
+  playlistButton: {
+    backgroundColor: "#1DB954", // Spotify-like green background
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 50,
+  },
+  playlistButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+ 
+  
+
+  //existing_playlist page buttons
+ 
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
+    textAlign: "center",
+  },
+  button: {
+    width: "100%",
+    height: 50,
+    backgroundColor: "#1DB954", // Spotify green
+    borderRadius: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  buttonText: {
+    fontSize: 18,
+    color: "white",
+    fontWeight: "bold",
+  },
+  playlistItem: {
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 15,
+  },
+  playlistText: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  addSongsButton: {
+    width: "35%",
+    height: 40,
+    backgroundColor: "#1DB954", // Spotify green
+    borderRadius: 50,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(154, 153, 153, 0.5)",
+    padding: 20,
+  },
+  input: {
+    width: "100%",
+    height: 50,
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderRadius: 50,
+    paddingLeft: 15,
+    marginBottom: 20,
+    fontSize: 16,
+    backgroundColor: "white",
+  },  
+
+    
 });
