@@ -25,7 +25,7 @@ const Audiobooks = () => {
           <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
             <Ionicons name="arrow-back" size={24} color="black" />
           </TouchableOpacity>
-          <Text style={styles.headerText}>Podcasts</Text>
+          <Text style={styles.headerText}>Audiobooks</Text>
         </View>
         <FlatList
           data={audiobooktData}
