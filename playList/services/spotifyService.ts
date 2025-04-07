@@ -83,3 +83,81 @@ export async function fetchSongs() {
     return [];
   }
 }
+
+export async function fetchCategories() {
+  //returns list of categories from Spotify API
+  try {
+    console.log("Getting Spotify Token")
+    const token = await getSpotifyToken();
+    
+    if (!token) {
+      console.error("No token available, unable to fetch categories")
+      return[];
+    }
+
+    const response =  await fetch(
+      `https://api.spotify.com/v1/browse/categories?country=US&limit=20`,
+      {
+        headers: {
+          Authorization: `Bearer  ${token}`,
+        },
+      }
+    );
+    if (!response.ok){
+      console.error("Failure to fetch categories", response.statusText);
+      return [];
+    }
+    const data = await response.json();
+    return data.categories.items;
+
+  } catch (error) {
+    console.error("Error encountered fetching categories", error);
+    return [];
+  }
+}
+
+export async function fetchCategoricalPlaylist(category:string) {
+  //returns playlists based off of an input category as shown in categories.tsx
+  try {
+    console.log("Getting Spotify Token")
+    const token = await getSpotifyToken();
+    if (!token) {
+      console.error("No token available, unable to fetch playlists")
+      return[];
+    }
+//testing
+
+    console.log("Category requested:", category);
+
+    const testCategories = await fetch("https://api.spotify.com/v1/browse/categories?country=US", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const testing = await testCategories.json();
+    console.log("Available categories:", testing.categories.items.map((c: any) => c.name)); //consoles names of 'valid' categproes
+//end testing
+
+
+
+    const response = await fetch(
+      //`https://api.spotify.com/v1/browse/categories/dinner/playlists`, // spotify API example
+      `https://api.spotify.com/v1/browse/categories/${category.toLowerCase()}/playlists`, //currently results in 404 error, even if using API example url
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (!response.ok){
+      console.error("Failure to fetch playlists", response.status);
+      return [];
+    }
+
+    const data = await response.json();
+    return data.playlists.items;
+
+  }  catch (error) {
+  console.error("error fetching playlists", error);
+  return [];
+  }
+}
