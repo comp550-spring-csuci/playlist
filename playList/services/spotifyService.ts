@@ -39,7 +39,7 @@ export async function getSpotifyToken() {
     return null;
   }
 }
-
+    
 // Function to fetch songs from Spotify
 export async function fetchSongs() {
   try {
