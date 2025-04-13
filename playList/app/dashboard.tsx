@@ -14,7 +14,7 @@ const Dashboard = () => {
   ];
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+	<SafeAreaView style={styles.safeArea}>
       <View style={styles.overlay}>
         <Text style={styles.dashboardHeader}>Dashboard</Text>
         <View style={styles.tilesContainer}>
