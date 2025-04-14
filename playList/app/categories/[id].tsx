@@ -10,10 +10,11 @@ const CategoryPlaylists = () => {
   const { id } = useLocalSearchParams();
   const [playlists, setPlaylists] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-
+  console.log("check");
   useEffect(() => {
     async function loadPlaylists() {
       const data = await fetchCategoricalPlaylist(id as string);
+      
       setPlaylists(data);
       setLoading(false);
     }
@@ -27,10 +28,9 @@ const CategoryPlaylists = () => {
       </View>
     );
   }
-
   return (
     <SafeAreaView style={styles.safeAreaContainer}>
-      <Text style={styles.headerTitle}>Playlists</Text>
+      <Text style={styles.headerTitle}>{id} Playlists</Text>
       <FlatList
         data={playlists}
         keyExtractor={(item) => item.id}
@@ -40,12 +40,13 @@ const CategoryPlaylists = () => {
             style={styles.songCard}
           >
             <Image
-              source={{ uri: item.images[0]?.url }}
+              source={{ uri: item.images?.[0]?.url }}
+              
               style={styles.songImage}
             />
             <View style={styles.songDetails}>
               <Text style={styles.songTitle}>{item.name}</Text>
-              <Text style={styles.songArtist}>{item.description}</Text>
+              <Text style={styles.songArtist}>{item.owner?.display_name}</Text>
             </View>
           </TouchableOpacity>
         )}

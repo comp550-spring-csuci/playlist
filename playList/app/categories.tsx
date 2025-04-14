@@ -28,7 +28,7 @@ const Categories = () => {
                 <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
                   <Ionicons name="arrow-back" size={24} color="black" />
                 </TouchableOpacity>
-                <Text style={styles.headerTitle}>Categoires</Text>
+                <Text style={styles.headerTitle}>Categories</Text>
               </View>
               <FlatList
                       data={categories}
