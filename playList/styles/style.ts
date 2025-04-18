@@ -169,5 +169,83 @@ export const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 14,
     fontWeight: "bold",
-  }
+  },
+// Modal Styles
+modalOverlay: {
+  flex: 1,
+  backgroundColor: "rgba(0,0,0,0.5)",
+  justifyContent: "center",
+  alignItems: "center",
+},
+modalContent: {
+  width: "80%",
+  backgroundColor: "#fff",
+  borderRadius: 10,
+  padding: 20,
+  alignItems: "center",
+},
+modalTitle: {
+  fontSize: 18,
+  fontWeight: "bold",
+  marginBottom: 20,
+},
+modalButton: {
+  backgroundColor: "#1DB954",
+  paddingVertical: 10,
+  paddingHorizontal: 20,
+  borderRadius: 50,
+  marginVertical: 8,
+  width: "100%",
+  alignItems: "center",
+},
+modalButtonText: {
+  color: "#fff",
+  fontWeight: "600",
+},
+modalCancelText: {
+  color: "#888",
+  marginTop: 15,
+  fontSize: 14,
+},  
+//playlist page
+playlistItem: {
+  padding: 16,
+  borderBottomColor: "#ddd",
+  borderBottomWidth: 1,
+  backgroundColor: "#f9f9f9",
+},
+modalSongName: {
+  fontSize: 18,
+  fontWeight: "bold",
+  textAlign: "center",
+},
+modalArtistName: {
+  fontSize: 16,
+  color: "#666",
+  marginTop: 4,
+  textAlign: "center",
+},
+centeredContent: {
+  flex: 1,
+  justifyContent: "center",
+  alignItems: "center",
+},
+
+emptyText: {
+  fontSize: 16,
+  color: "#888",
+  textAlign: "center",
+},
+
+playlistName: {
+  fontSize: 18,
+  fontWeight: '600',
+  color: '#000',
+},
+playlistSongCount: {
+  fontSize: 14,
+  color: '#555',
+  marginTop: 2,
+},
+
 });
