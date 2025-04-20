@@ -18,21 +18,19 @@ const tiles = [
 
 const Dashboard:React.FC = () => {
   return (
-    <SafeAreaView style={styles.safeArea}>
-      {/*<NavigationContainer>
-        <TabNavigator/>
-      </NavigationContainer>*/}
-    <View style={styles.overlay}>
-      <Text style={styles.dashboardHeader}>Dashboard</Text>
-      <View style={styles.tilesContainer}>
-        {tiles.map((tile, index) => (
-          <Link key={index} href={tile.href} asChild>
-            <TouchableOpacity style={styles.tile} activeOpacity={0.8}>
-              <Ionicons name={tile.icon} size={50} color="#fff" />
-              <Text style={styles.tileText}>{tile.title}</Text>
-            </TouchableOpacity>
-          </Link>
-        ))}
+	<SafeAreaView style={styles.safeArea}>
+      <View style={styles.overlay}>
+        <Text style={styles.dashboardHeader}>Dashboard</Text>
+        <View style={styles.tilesContainer}>
+          {tiles.map((tile, index) => (
+            <Link key={index} href={tile.href} asChild>
+              <TouchableOpacity style={styles.tile} activeOpacity={0.8}>
+                <Ionicons name={tile.icon} size={50} color="#fff" />
+                <Text style={styles.tileText}>{tile.title}</Text>
+              </TouchableOpacity>
+            </Link>
+          ))}
+        </View>
       </View>
      
     </View>
