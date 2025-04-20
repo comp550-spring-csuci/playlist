@@ -1,15 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, Image, ActivityIndicator, TouchableOpacity, Linking } from "react-native";
+import { View, Text, FlatList, Image, ActivityIndicator, TouchableOpacity, TextInput, Linking } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { fetchSongs } from "../services/spotifyService";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { styles } from "@/styles/style";
+import PlayListSearch from "./playListSearch";
 
 const Songs = () => {
   const router = useRouter();
   const [songs, setSongs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredSongs = songs.filter((item) =>
+	item.track.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+	item.track.artists[0].name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   useEffect(() => {
     async function loadSongs() {
@@ -42,9 +49,25 @@ const Songs = () => {
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Songs</Text>
       </View>
-
+	
+	  <View style={styles.searchContainer}>
+        <TextInput
+          placeholder="Search songs..."
+          value={searchQuery}
+          onChangeText={(text) => setSearchQuery(text)}
+          style={styles.searchInput}
+        />
+      </View>
+	  
+	{filteredSongs.length === 0 ? (
+	  <View style={{ padding: 20 }}>
+		<Text style={{ textAlign: "center", fontSize: 16, color: "gray" }}>
+			No results found.
+		</Text>
+	  </View>
+	) : (
       <FlatList
-        data={songs}
+        data={filteredSongs}
         keyExtractor={(item) => item.track.id}
         renderItem={({ item }) => (
           <View style={styles.songCard}>
@@ -65,6 +88,7 @@ const Songs = () => {
           </View>
         )}
       />
+	 )}
     </SafeAreaView>
   );
 }
