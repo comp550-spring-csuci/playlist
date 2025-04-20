@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Image, TextInput, TouchableOpacity } from "react-native";
+import { View, StyleSheet, Text, Image, TextInput, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 import MyButton from "@/components/MyButton";
 import { styles } from "@/styles/style";
@@ -19,6 +19,7 @@ const Login = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Image source={require("@/assets/images/myicon.png")} />
+        {/*<Image source={require("@/assets/images/playlist-logo.png")}  />*/}
         <Text style={styles.title}>PlayList</Text>
       </View>
       <View style={styles.formContainer}>
@@ -40,5 +41,6 @@ const Login = () => {
     </View>
   );
 };
+
 
 export default Login;

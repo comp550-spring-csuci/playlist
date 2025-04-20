@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react"; 
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import React, { useEffect, useState } from "react";
+import { View, Text, FlatList, Image, ActivityIndicator, TouchableOpacity, Linking, StyleSheet } from 'react-native';
+
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -91,4 +92,6 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Audiobooks;
+export default Audiobooks; 
+
+
