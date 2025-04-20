@@ -1,8 +1,9 @@
-import React from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from "react"; 
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
+import PlayListSearch from "./playListSearch";
 
 const Videos = () => {
   const videoData = [
@@ -17,7 +18,13 @@ const Videos = () => {
     </View>
   );
   const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState("");
 
+  const filteredVideos = videoData.filter((item) => {
+     const title = item?.title || ""; 
+	 return title.toLowerCase().includes(searchQuery.toLowerCase());
+  });
+  
   return (
       <SafeAreaView style={{ flex: 1, paddingHorizontal: 20, backgroundColor: "#F5F5F5" }}>
       <View style={styles.container}>
@@ -27,15 +34,37 @@ const Videos = () => {
           </TouchableOpacity>
           <Text style={styles.headerText}>Videos</Text>
         </View>
-        <FlatList
-          data={videoData}
-          renderItem={renderItem}
-          keyExtractor={item => item.id}
+		
+	  <View style={styles.searchContainer}>
+        <TextInput
+          placeholder="Search videos..."
+          value={searchQuery}
+          onChangeText={(text) => setSearchQuery(text)}
+          style={styles.searchInput}
         />
       </View>
-      </SafeAreaView>
-    );
-  };
+	  
+	  {filteredVideos.length === 0 ? (
+          <View style={{ padding: 20 }}>
+            <Text style={{ textAlign: "center", fontSize: 16, color: "gray" }}>
+              No results found.
+            </Text>
+          </View>
+      ) : (
+        <FlatList
+          data={filteredVideos}
+          keyExtractor={item => item.id}
+		  renderItem={({ item }) => (
+			<View style={styles.item}>
+				<Text>{item.title}</Text> 
+			</View>
+		  )}
+        />
+	   )}
+      </View>
+    </SafeAreaView>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
