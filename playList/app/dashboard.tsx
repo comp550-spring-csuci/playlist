@@ -8,7 +8,6 @@ import * as React from 'react';
 import TabNavigator from './TabNavigator';
 import { NavigationContainer } from "@react-navigation/native";
 
-
 const tiles = [
   { title: "Songs", icon: "musical-notes", href: "/songs" },
   { title: "Podcasts", icon: "mic", href: "/podcasts" },
@@ -32,8 +31,7 @@ const Dashboard:React.FC = () => {
           ))}
         </View>
       </View>
-     
-    </View>
+      <TabNavigator/>
   </SafeAreaView>
     
   );
