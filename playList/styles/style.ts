@@ -79,6 +79,13 @@ export const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 25,
   },
+  dashboardImage: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: 'center',
+    marginTop: 50,
+    marginBottom: 50,
+  },
   tilesContainer: {
     flexDirection: "row",
     flexWrap: "wrap",

@@ -19,9 +19,9 @@ export default function Index() {
       </View>
       <View style={styles.formContainer}>
         <Text style={styles.welcomeText}>Welcome to PlayList</Text>
-        <Text style={styles.description}>Lorem ipsum is a dummy or placeholder text commonly used
-        in graphic design, publishing, and web development to fill empty spaces in a layout that
-        does not yet have content.</Text>
+        <Text style={styles.description}>Your music. Your mood. Your PlayList.{"\n"}
+        Explore songs, podcasts, audiobooks, and videos come together seamlessly —
+        all in one beautifully personalized experience.{"\n"}PlayList is your all-in-one media companion.</Text>
         <MyButton title="GET STARTED" onPress={getStarted} />
       </View>
     </View>

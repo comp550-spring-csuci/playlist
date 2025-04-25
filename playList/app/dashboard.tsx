@@ -1,11 +1,19 @@
 import React from "react";
-import { View, Text, TouchableOpacity, ImageBackground } from "react-native";
+import { View, Text, Image, TouchableOpacity, ImageBackground } from "react-native";
 import { Link } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { styles } from "@/styles/style";
 
 const Dashboard = () => {
+
+  const getGreeting = () => {
+  	const hour = new Date().getHours();
+  	if (hour < 12) return "Good morning...";
+  	else if (hour < 18) return "Good afternoon...";
+  	return "Good evening...";
+  };
+
   const tiles = [
     { title: "Songs", icon: "musical-notes", href: "/songs" },
     { title: "Podcasts", icon: "mic", href: "/podcasts" },
@@ -17,6 +25,10 @@ const Dashboard = () => {
 	<SafeAreaView style={styles.safeArea}>
       <View style={styles.overlay}>
         <Text style={styles.dashboardHeader}>Dashboard</Text>
+        <Text style={{ marginTop: 20, color: "grey", fontSize: 20 }}>{getGreeting()}</Text>
+        <View style={styles.dashboardImage}>
+          <Image source={require('../assets/images/playlist-logo.png')} style={{ width: 390, resizeMode: "contain" }} />
+        </View>
         <View style={styles.tilesContainer}>
           {tiles.map((tile, index) => (
             <Link key={index} href={tile.href} asChild>
