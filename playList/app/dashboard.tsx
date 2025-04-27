@@ -1,12 +1,25 @@
-import { View, Text, StyleSheet, TouchableOpacity, ImageBackground } from "react-native";
+import React from "react";
+import { View, Text, Image, TouchableOpacity, ImageBackground } from "react-native";
 import { Link } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { styles } from "@/styles/style";
 
-import * as React from 'react';
-import TabNavigator from './TabNavigator';
-import { NavigationContainer } from "@react-navigation/native";
+const Dashboard = () => {
+
+  const getGreeting = () => {
+  	const hour = new Date().getHours();
+  	if (hour < 12) return "Good morning...";
+  	else if (hour < 18) return "Good afternoon...";
+  	return "Good evening...";
+  };
+
+  const tiles = [
+    { title: "Songs", icon: "musical-notes", href: "/songs" },
+    { title: "Podcasts", icon: "mic", href: "/podcasts" },
+    { title: "Audiobooks", icon: "book", href: "/audiobooks" },
+    { title: "Videos", icon: "videocam", href: "/videos" },
+  ];
 
 const tiles = [
   { title: "Songs", icon: "musical-notes", href: "/songs" },
@@ -20,6 +33,10 @@ const Dashboard:React.FC = () => {
 	<SafeAreaView style={styles.safeArea}>
       <View style={styles.overlay}>
         <Text style={styles.dashboardHeader}>Dashboard</Text>
+        <Text style={{ marginTop: 20, color: "grey", fontSize: 20 }}>{getGreeting()}</Text>
+        <View style={styles.dashboardImage}>
+          <Image source={require('../assets/images/playlist-logo.png')} style={{ width: 390, resizeMode: "contain" }} />
+        </View>
         <View style={styles.tilesContainer}>
           {tiles.map((tile, index) => (
             <Link key={index} href={tile.href} asChild>

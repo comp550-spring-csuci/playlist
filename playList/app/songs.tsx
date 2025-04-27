@@ -1,61 +1,44 @@
-import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  FlatList,
-  Image,
-  ActivityIndicator,
-  TouchableOpacity,
-  Linking,
-  Modal,
-} from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-import { fetchSongs } from "../services/spotifyService";
+import { useEffect, useState } from "react";
+import { View, Text, TextInput, Image, FlatList, ActivityIndicator, TouchableOpacity, Linking, Modal } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { styles } from "@/styles/style";
-import PlayListSearch from "./playListSearch";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { TextInput } from 'react-native';
-
+import { useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+import { fetchSongs } from "../services/spotifyService";
+import usePaginatedData from "../hooks/usePaginatedData";
+import { styles } from "@/styles/style";
 
 const Songs = () => {
   const router = useRouter();
-  const [songs, setSongs] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedSong, setSelectedSong] = useState<any | null>(null);
   const [playlists, setPlaylists] = useState<any[]>([]);
   const [newPlaylistModalVisible, setNewPlaylistModalVisible] = useState(false);
   const [newPlaylistName, setNewPlaylistName] = useState("");
+  const [showFullName, setShowFullName] = useState(false);
+
+  const {
+      data: songs,
+      isFetchingMore,
+      hasMore,
+      fetchData: fetchMoreSongs,
+    } = usePaginatedData(fetchSongs, 50);
 
   const filteredSongs = songs.filter((item) =>
-    item.track.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    item.track.artists[0].name.toLowerCase().includes(searchQuery.toLowerCase())
+    item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    item.artists[0].name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   useEffect(() => {
-    async function loadSongs() {
-      try {
-        const tracks = await fetchSongs();
-        setSongs(tracks);
-      } catch (error) {
-        console.error("Error fetching songs:", error);
-      } finally {
-        setLoading(false);
-      }
+  const loadPlaylistsFromStorage = async () => {
+    const storedPlaylists = await AsyncStorage.getItem("playlists");
+    if (storedPlaylists) {
+      setPlaylists(JSON.parse(storedPlaylists));
     }
-
-    loadSongs();
-    const loadPlaylists = async () => {
-        const storedPlaylists = await AsyncStorage.getItem("playlists");
-        if (storedPlaylists) {
-          setPlaylists(JSON.parse(storedPlaylists));
-        }
-      };
-      loadPlaylists();
-  }, []);
+  };
+  loadPlaylistsFromStorage();
+    }, []);
 
   const openModal = (song: any) => {
     setSelectedSong(song);
@@ -84,14 +67,18 @@ const Songs = () => {
     closeModal();
     router.push("/playlist");
   };
-  
-  if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#1DB954" />
-      </View>
-    );
-  }
+
+  const toggleName = () => {
+       setShowFullName(!showFullName);
+     };
+
+  if (songs.length === 0 && !isFetchingMore) {
+      return (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#1DB954" />
+        </View>
+      );
+    }
 
   return (
     <SafeAreaView style={styles.safeAreaContainer}>
@@ -121,31 +108,44 @@ const Songs = () => {
 
       <FlatList
         data={filteredSongs}
-        keyExtractor={(item) => item.track.id}
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.songCard}>
             <Image
-              source={{ uri: item.track.album.images[0].url }}
+              source={{ uri: item.album.images[0].url }}
               style={styles.songImage}
             />
             <View style={styles.songDetails}>
-              <Text style={styles.songTitle}>{item.track.name}</Text>
-              <Text style={styles.songArtist}>{item.track.artists[0].name}</Text>
+              <Text style={styles.songTitle}>
+                {showFullName ? item.name : item.name.slice(0, 25) + (item.name.length > 25 ? "..." : "")}
+              </Text>
+              <Text style={styles.songArtist}>
+                {showFullName ? item.artists[0].name : item.artists[0].name.slice(0, 25) + (item.artists[0].name.length > 25 ? "..." : "")}
+              </Text>
             </View>
             <TouchableOpacity
-              onPress={() => Linking.openURL(item.track.external_urls.spotify)}
-              style={styles.playButton}
+              onPress={() => Linking.openURL(item.external_urls.spotify)}
             >
-              <Text style={styles.playButtonText}>Play</Text>
+              <Ionicons name="play-circle" size={28} color="#1DB954" />
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => openModal(item.track)}
-              style={styles.playButton}
+              onPress={() => openModal(item)}
             >
-              <Text style={styles.playButtonText}>+</Text>
+              <Ionicons name="add-circle" size={28} color="#1DB954" />
             </TouchableOpacity>
           </View>
         )}
+        onEndReached={hasMore ? fetchMoreSongs : null}
+        onEndReachedThreshold={0.1}
+        ListFooterComponent={
+          isFetchingMore ? (
+            <ActivityIndicator size="small" color="#1DB954" />
+          ) : !hasMore ? (
+            <Text style={{ textAlign: "center", padding: 10, color: "gray" }}>
+              No more songs
+            </Text>
+          ) : null
+        }
       />
     )}
 
