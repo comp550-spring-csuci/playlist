@@ -23,7 +23,7 @@ export default function Index() {
         <View style={styles.container}>
 
           <Image 
-            source={require("@/assets/images/myicon.png")}
+            source={require("@/assets/images/headphones.gif")}
             style= {styles.firstImage} 
           />
 
@@ -61,6 +61,8 @@ const styles = StyleSheet.create({
   },
 
   firstImage: {
+    width: 250,
+    height: 250,
     marginBottom: 20
   },
 
