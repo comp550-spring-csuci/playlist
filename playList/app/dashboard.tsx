@@ -48,7 +48,6 @@ const Dashboard:React.FC = () => {
           ))}
         </View>
       </View>
-      <TabNavigator/>
   </SafeAreaView>
     
   );
