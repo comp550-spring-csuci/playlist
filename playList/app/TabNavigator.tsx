@@ -9,6 +9,7 @@ import Entypo from '@expo/vector-icons/Entypo';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import Octicons from '@expo/vector-icons/Octicons';
 
 
 
@@ -54,7 +55,7 @@ const TabNavigator:React.FC = () => {
           name="Downloads" 
           component={Downloads}
           options = {{
-            tabBarLabel: "Playlists",
+            tabBarLabel: "Downloads",
             headerShown: false,
             tabBarLabelStyle: {color: "white"},
             tabBarIcon: ({focused}) =>
@@ -63,8 +64,23 @@ const TabNavigator:React.FC = () => {
               ): (<Ionicons name="download-outline" size={24} color="black" />) }} 
         />
 
+        <Tab.Screen 
+          name="Profile" 
+          component={UserProfile}
+           options = {{
+            tabBarLabel: "Profile",
+            headerShown: false,
+            tabBarLabelStyle: {color: "white"},
+            tabBarIcon: ({focused}) =>
+              focused? (
+                <Octicons name="person-fill" size={24} color="black" />
+              ): (<Octicons name="person" size={24} color="black" />) }} 
+        />
 
-        <Tab.Screen name="Profile" component={UserProfile}/>
+
+
+
+
       </Tab.Navigator>
 );
 }
