@@ -7,6 +7,8 @@ import Downloads from './screens/Downloads';
 import UserProfile from './screens/UserProfile';
 import Entypo from '@expo/vector-icons/Entypo';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+
 
 const Tab = createBottomTabNavigator();
 
@@ -33,7 +35,20 @@ const TabNavigator:React.FC = () => {
                 ): (<AntDesign name="home" size={24} color="black" />) }} 
         />
 
-        <Tab.Screen name="Playlists" component={Playlists}/>
+        <Tab.Screen 
+          name="Playlists" 
+          component={Playlists}
+          options = {{
+            tabBarLabel: "Playlists",
+            headerShown: false,
+            tabBarLabelStyle: {color: "white"},
+            tabBarIcon: ({focused}) =>
+              focused? (
+                <MaterialCommunityIcons name="playlist-music" size={24} color="black" />
+              ): (<MaterialCommunityIcons name="playlist-music-outline" size={24} color="black" />) }}  
+        />
+
+
         <Tab.Screen name="Downloads" component={Downloads}/>
         <Tab.Screen name="Profile" component={UserProfile}/>
       </Tab.Navigator>
