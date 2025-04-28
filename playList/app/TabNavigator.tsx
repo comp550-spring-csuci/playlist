@@ -21,7 +21,10 @@ const TabNavigator:React.FC = () => {
         tabBarStyle: {
           backgroundColor: '#f5f5f5',
           borderTopWidth: 0,
-          elevation: 4
+          justifyContent: 'center'
+        },
+        tabBarItemStyle: {
+          flex: 1
         }
       }}
       >
