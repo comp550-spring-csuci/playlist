@@ -21,6 +21,14 @@ const Dashboard = () => {
     { title: "Videos", icon: "videocam", href: "/videos" },
   ];
 
+const tiles = [
+  { title: "Songs", icon: "musical-notes", href: "/songs" },
+  { title: "Podcasts", icon: "mic", href: "/podcasts" },
+  { title: "Audiobooks", icon: "book", href: "/audiobooks" },
+  { title: "Videos", icon: "videocam", href: "/videos" },
+];
+
+const Dashboard:React.FC = () => {
   return (
 	<SafeAreaView style={styles.safeArea}>
       <View style={styles.overlay}>
@@ -40,8 +48,11 @@ const Dashboard = () => {
           ))}
         </View>
       </View>
-    </SafeAreaView>
+  </SafeAreaView>
+    
   );
-};
+
+}
+
 
 export default Dashboard;
