@@ -8,6 +8,8 @@ import UserProfile from './screens/UserProfile';
 import Entypo from '@expo/vector-icons/Entypo';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import Ionicons from '@expo/vector-icons/Ionicons';
+
 
 
 const Tab = createBottomTabNavigator();
@@ -48,8 +50,20 @@ const TabNavigator:React.FC = () => {
               ): (<MaterialCommunityIcons name="playlist-music-outline" size={24} color="black" />) }}  
         />
 
+        <Tab.Screen 
+          name="Downloads" 
+          component={Downloads}
+          options = {{
+            tabBarLabel: "Playlists",
+            headerShown: false,
+            tabBarLabelStyle: {color: "white"},
+            tabBarIcon: ({focused}) =>
+              focused? (
+                <Ionicons name="download" size={24} color="black" />
+              ): (<Ionicons name="download-outline" size={24} color="black" />) }} 
+        />
 
-        <Tab.Screen name="Downloads" component={Downloads}/>
+
         <Tab.Screen name="Profile" component={UserProfile}/>
       </Tab.Navigator>
 );
