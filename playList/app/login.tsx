@@ -8,7 +8,8 @@ const Login = () => {
   const router = useRouter();
 
   const onLogin = () => {
-    router.navigate("/AppTabs");
+    // router.navigate("/dashboard");
+    router.navigate("/Apptabs");
   };
 
   const onSignUp = () => {

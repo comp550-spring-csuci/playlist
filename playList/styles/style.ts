@@ -115,7 +115,7 @@ export const styles = StyleSheet.create({
   // Songs Component Styles
   safeAreaContainer: {
     flex: 1,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     backgroundColor: "#F5F5F5",
   },
   loadingContainer: {
@@ -254,5 +254,21 @@ playlistSongCount: {
   color: '#555',
   marginTop: 2,
 },
+
+// Search Bar
+searchInput: {
+  height: 35,
+  backgroundColor: "#D3D3D3",
+  borderRadius: 12,
+  paddingHorizontal: 16,
+  fontSize: 16,
+  marginBottom: 15,
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 1 },
+  shadowOpacity: 0.1,
+  shadowRadius: 2,
+  elevation: 2, // for Android shadow
+  color: "#333",
+}
 
 });
