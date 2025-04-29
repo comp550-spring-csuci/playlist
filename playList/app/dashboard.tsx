@@ -5,7 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { styles } from "@/styles/style";
 
-const Dashboard = () => {
+const Dashboard:React.FC = () => {
 
   const getGreeting = () => {
   	const hour = new Date().getHours();
@@ -21,14 +21,6 @@ const Dashboard = () => {
     { title: "Videos", icon: "videocam", href: "/videos" },
   ];
 
-const tiles = [
-  { title: "Songs", icon: "musical-notes", href: "/songs" },
-  { title: "Podcasts", icon: "mic", href: "/podcasts" },
-  { title: "Audiobooks", icon: "book", href: "/audiobooks" },
-  { title: "Videos", icon: "videocam", href: "/videos" },
-];
-
-const Dashboard:React.FC = () => {
   return (
 	<SafeAreaView style={styles.safeArea}>
       <View style={styles.overlay}>
@@ -53,6 +45,5 @@ const Dashboard:React.FC = () => {
   );
 
 }
-
 
 export default Dashboard;
