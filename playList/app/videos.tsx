@@ -78,7 +78,7 @@ const Videos = () => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#f5f5f5" }}>
       <View style={styles.headerContainer}>
-        <TouchableOpacity onPress={() => router.push("/dashboard")} style={styles.backButton}>
+        <TouchableOpacity onPress={() => router.push("/AppTabs")} style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Videos</Text>

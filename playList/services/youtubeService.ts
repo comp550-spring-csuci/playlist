@@ -1,4 +1,4 @@
-const YOUTUBE_API_KEY = 'AIzaSyAL5vd_wYBaXC3AGvgcxCWxajbc2G7U1Xc';
+const YOUTUBE_API_KEY = '';
 const YOUTUBE_SEARCH_URL = 'https://www.googleapis.com/youtube/v3/search';
 
 // Generic fetch function

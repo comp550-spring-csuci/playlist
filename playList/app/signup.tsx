@@ -17,7 +17,8 @@ const SignUp = () => {
    return (
        <View style={styles.container}>
          <View style={styles.header}>
-           <Image source={require("@/assets/images/myicon.png")} />
+           {/*<Image source={require("@/assets/images/myicon.png")} />*/}
+           <Image source={require("@/assets/images/headphones2.gif")} style= {styles.logoImage}/>
            <Text style={styles.title}>PlayList</Text>
          </View>
          <View style={styles.formContainer}>

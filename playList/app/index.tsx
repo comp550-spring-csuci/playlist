@@ -16,39 +16,57 @@ export default function Index() {
   return (
     <View style={styles.indexContainer}>
 
-        {/*<View style={styles.imageContainer}>*/}
+        {/*<View style={styles.container}>
+        <Image
+          source={require("@/assets/images/headphones.gif")}
+          style= {style.firstImage1}
+        />*/}
         <View>
-          <Image source={require("@/assets/images/myicon.png")} />
+          <Image
+            source={require("@/assets/images/headphones2.gif")}
+            style= {styles.logoImage}
+          />
           <Text style={styles.title}>PlayList</Text>
-          {/*<Image source={require("@/assets/images/playlist-logo.png")} style={styles.image} />*/}
+
+          {/*<Text style={style.welcomeText}>Welcome to</Text>
+          <Image 
+            source={require("@/assets/images/playlist-logo.png")} 
+            style={style.secondImage} />*/}
         </View>
       
       <View style={styles.formContainer}>
         <Text style={styles.welcomeText}>Welcome to PlayList</Text>
         <Text style={styles.description}>Your music. Your mood. Your PlayList.{"\n"}
         Discover songs, podcasts, audiobooks, and videos — all in one beautifully integrated multimedia companion.</Text>
-        <MyButton title="GET STARTED" onPress={getStarted} />
+        <View style = {styles.buttonContainer}>
+          <MyButton title="GET STARTED" onPress={getStarted} />
+        </View>
       </View> 
     </View>
   );
 }
 
-/*const styles = StyleSheet.create({
+const style = StyleSheet.create({
   indexContainer: {
     flex: 1, 
     justifyContent: 'center',
     alignItems: 'center'
   },
 
-  imageContainer: {
+  container: {
     justifyContent: 'center',
     alignItems: 'center',
   },
+  firstImage: {
+    width: 200,
+    height: 200
+  },
 
-  image: {
+  secondImage: {
     width: 350,
     height: 350,
-    resizeMode: 'contain'
+    resizeMode: 'contain',
+    marginTop: 10
   },
 
   title: {
@@ -59,12 +77,17 @@ export default function Index() {
       alignItems: 'center'
     },
   
+    buttonContainer: {
+      marginTop: 30
+    },
+
     welcomeText: {
-      textAlign: 'center'
+      textAlign: 'center',
+      marginBottom: 5
     },
 
     description: {
       textAlign: 'center'
     }
   }
-)*/
+)

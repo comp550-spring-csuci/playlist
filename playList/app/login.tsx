@@ -9,7 +9,7 @@ const Login = () => {
 
   const onLogin = () => {
     // router.navigate("/dashboard");
-    router.navigate("/Apptabs");
+    router.navigate("/AppTabs");
   };
 
   const onSignUp = () => {
@@ -19,8 +19,9 @@ const Login = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Image source={require("@/assets/images/myicon.png")} />
-        {/*<Image source={require("@/assets/images/playlist-logo.png")}  />*/}
+        <Image source={require("@/assets/images/headphones2.gif")} style= {styles.logoImage}/>
+        {/*<Image source={require("@/assets/images/myicon.png")} />
+        <Image source={require("@/assets/images/playlist-logo.png")}  />*/}
         <Text style={styles.title}>PlayList</Text>
       </View>
       <View style={styles.formContainer}>
