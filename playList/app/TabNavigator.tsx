@@ -21,13 +21,15 @@ const TabNavigator:React.FC = () => {
         tabBarStyle: {
           backgroundColor: '#f5f5f5',
           borderTopWidth: 0,
-          justifyContent: 'center'
+          flexDirection: 'row'
         },
         tabBarItemStyle: {
           flex: 1
         }
       }}
       >
+  
+ 
         <Tab.Screen 
           name="Home"
           component={Dashboard}
@@ -40,6 +42,7 @@ const TabNavigator:React.FC = () => {
                   <Entypo name="home" size={24} color="black" />
                 ): (<AntDesign name="home" size={24} color="black" />) }} 
         />
+    
 
         <Tab.Screen 
           name="Playlists" 

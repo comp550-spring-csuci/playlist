@@ -24,8 +24,8 @@ const Login = () => {
         <Text style={styles.title}>PlayList</Text>
       </View>
       <View style={styles.formContainer}>
-        
-        <MyButton title="Login with Spotify" onPress={onLogin} />
+        {/*
+        <MyButton title="Login with Spotify" onPress={onLogin} /> */}
 
        
         <Pressable
@@ -48,12 +48,14 @@ const Login = () => {
 
 
 
-        
+       
       </View>
+      {/*}
       <TouchableOpacity onPress={onSignUp}>
         <Text style={styles.signUpText}>Don't Have an Account? Sign Up</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
+   
   );
 };
 
