@@ -10,6 +10,8 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Octicons from '@expo/vector-icons/Octicons';
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import login from './login';
 
 
 
@@ -21,10 +23,12 @@ const TabNavigator:React.FC = () => {
         tabBarStyle: {
           backgroundColor: '#f5f5f5',
           borderTopWidth: 0,
-          flexDirection: 'row'
         },
         tabBarItemStyle: {
           flex: 1
+        },
+        tabBarIconStyle: {
+          alignSelf: 'center'
         }
       }}
       >
@@ -91,4 +95,21 @@ const TabNavigator:React.FC = () => {
 );
 }
 
-export default TabNavigator;
+{/*}
+const Stack = createNativeStackNavigator();
+
+function Navigation(){
+    return (
+        <NavigationContainer>
+            <Stack.Navigator>
+                <Stack.Screen name="Login" component={login} options={{headerShown:false}}/>
+                <Stack.Screen name="Dashboard" component={TabNavigator} options={{headerShown:false}}/>
+                
+            </Stack.Navigator>
+        </NavigationContainer>
+    )
+}
+
+*/}
+
+export default TabNavigator
