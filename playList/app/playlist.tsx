@@ -12,7 +12,15 @@ const Playlist = () => {
   const params = useLocalSearchParams();
   const [playlists, setPlaylists] = useState<any[]>([]);
   const songToAdd = params.songToAdd ? JSON.parse(params.songToAdd as string) : null;
+  const [incomingSong, setIncomingSong] = useState<any | null>(null);
+  const [songAdded, setSongAdded] = useState<boolean>(false);
 
+    // UseEffect to set incomingSong when songToAdd is available
+    useEffect(() => {
+      if (songToAdd) {
+        setIncomingSong(songToAdd); // Only once
+      }
+    }, [songToAdd]);
 
   // Load playlists from AsyncStorage
   useEffect(() => {
@@ -26,7 +34,7 @@ const Playlist = () => {
         console.error("Failed to load playlists:", error);
       }
     };
-
+    
     loadPlaylists();
   }, []);
 
@@ -35,7 +43,7 @@ const Playlist = () => {
             updatedPlaylists.splice(index, 1);
             setPlaylists(updatedPlaylists);
             await AsyncStorage.setItem("playlists", JSON.stringify(updatedPlaylists));
-  }
+  };
 
   return (
     <SafeAreaView style={styles.safeAreaContainer}>
@@ -53,32 +61,57 @@ const Playlist = () => {
           <Text style={styles.emptyText}>No playlists found. Create one from Songs page!</Text>
         </View>
       ) : (
+        
         <FlatList
-  data={playlists}
-  keyExtractor={(item, index) => index.toString()}
-  renderItem={({ item, index }) => (
-    <TouchableOpacity
-      onPress={async () => {
-        if (songToAdd) {
-          const updatedPlaylists = [...playlists];
-          updatedPlaylists[index].songs.push(songToAdd);
-          await AsyncStorage.setItem("playlists", JSON.stringify(updatedPlaylists));
-          setPlaylists(updatedPlaylists);
-        }
-      }}
-    >
-      <View style={styles.songCard}>
-      <View style={{ flex: 1 }}>
-  <Text style={styles.playlistName}>{item.name}</Text>
-  <Text style={styles.playlistSongCount}>{item.songs.length} song(s)</Text>
-</View>
-<TouchableOpacity onPress={() => deletePlaylist(index)}>
-  <Ionicons name="trash-outline" size={24} color="red" />
-</TouchableOpacity>
-</View>
-    </TouchableOpacity>
-  )}
-/>
+        data={playlists}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item, index }) => (
+          <View style={styles.songCard}>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.playlistName}>{item.name}</Text>
+              <Text style={styles.playlistSongCount}>{item.songs.length} song(s)</Text>
+            </View>
+      
+         
+      
+            {/* Plus Icon to Add Song to Playlist */}
+            <TouchableOpacity
+              onPress={async () => {
+                if (songAdded) {
+                  Alert.alert("Song Already Added", "You can only add the song to one playlist in this session.");
+                  return;
+                }
+      
+                if (incomingSong) {
+                  const updatedPlaylists = [...playlists];
+                  const alreadyExists = updatedPlaylists[index].songs.some(
+                    (song) => song.id === incomingSong.id
+                  );
+      
+                  if (!alreadyExists) {
+                    updatedPlaylists[index].songs.push(incomingSong);
+                    await AsyncStorage.setItem("playlists", JSON.stringify(updatedPlaylists));
+                    setPlaylists(updatedPlaylists);
+                    setSongAdded(true); // Prevent future additions
+                    setIncomingSong(null); // Clear incomingSong
+                    Alert.alert("Song Added!", `Added to playlist "${updatedPlaylists[index].name}"`);
+                  } else {
+                    Alert.alert("Already Exists", "This song is already in the selected playlist.");
+                  }
+                }
+              }}
+            >
+              <Ionicons name="add-circle" size={28} color="#1DB954" />
+            </TouchableOpacity>
+
+               {/* Trash Icon to Delete Playlist */}
+               <TouchableOpacity onPress={() => deletePlaylist(index)}>
+              <Ionicons name="trash-outline" size={24} color="red" />
+            </TouchableOpacity>
+          </View>
+        )}
+      />
+      
 
       )}
     </SafeAreaView>
