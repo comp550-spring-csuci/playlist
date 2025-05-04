@@ -38,9 +38,11 @@ const TabNavigator:React.FC = () => {
           name="Home"
           component={Dashboard}
           options = {{
-              tabBarLabel: "Home",
+              
+              tabBarActiveTintColor: 'black',  
+              tabBarInactiveTintColor: 'black',
               headerShown: false,
-              tabBarLabelStyle: {color: "white"},
+              
               tabBarIcon: ({focused}) =>
                 focused? (
                   <Entypo name="home" size={24} color="black" />
@@ -52,9 +54,11 @@ const TabNavigator:React.FC = () => {
           name="Playlists" 
           component={Playlists}
           options = {{
-            tabBarLabel: "Playlists",
+            
             headerShown: false,
-            tabBarLabelStyle: {color: "white"},
+            tabBarActiveTintColor: 'black',  
+            tabBarInactiveTintColor: 'black', 
+            
             tabBarIcon: ({focused}) =>
               focused? (
                 <MaterialCommunityIcons name="playlist-music" size={24} color="black" />
@@ -65,9 +69,11 @@ const TabNavigator:React.FC = () => {
           name="Downloads" 
           component={Downloads}
           options = {{
-            tabBarLabel: "Downloads",
+            
             headerShown: false,
-            tabBarLabelStyle: {color: "white"},
+            tabBarActiveTintColor: 'black',  
+            tabBarInactiveTintColor: 'black',
+            
             tabBarIcon: ({focused}) =>
               focused? (
                 <Ionicons name="download" size={24} color="black" />
@@ -78,9 +84,10 @@ const TabNavigator:React.FC = () => {
           name="Profile" 
           component={UserProfile}
            options = {{
-            tabBarLabel: "Profile",
+            
+            tabBarActiveTintColor: 'black',  
+            tabBarInactiveTintColor: 'black',
             headerShown: false,
-            tabBarLabelStyle: {color: "white"},
             tabBarIcon: ({focused}) =>
               focused? (
                 <Octicons name="person-fill" size={24} color="black" />
