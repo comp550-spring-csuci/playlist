@@ -33,6 +33,8 @@ const TabNavigator:React.FC = () => {
       }}
       >
   
+
+       
  
         <Tab.Screen 
           name="Home"
@@ -42,6 +44,7 @@ const TabNavigator:React.FC = () => {
               tabBarActiveTintColor: 'black',  
               tabBarInactiveTintColor: 'black',
               headerShown: false,
+              tabBarLabelPosition: 'below-icon',
               
               tabBarIcon: ({focused}) =>
                 focused? (
@@ -57,7 +60,8 @@ const TabNavigator:React.FC = () => {
             
             headerShown: false,
             tabBarActiveTintColor: 'black',  
-            tabBarInactiveTintColor: 'black', 
+            tabBarInactiveTintColor: 'black',
+            tabBarLabelPosition: 'below-icon', 
             
             tabBarIcon: ({focused}) =>
               focused? (
@@ -73,6 +77,7 @@ const TabNavigator:React.FC = () => {
             headerShown: false,
             tabBarActiveTintColor: 'black',  
             tabBarInactiveTintColor: 'black',
+            tabBarLabelPosition: 'below-icon',
             
             tabBarIcon: ({focused}) =>
               focused? (
@@ -80,6 +85,7 @@ const TabNavigator:React.FC = () => {
               ): (<Ionicons name="download-outline" size={24} color="black" />) }} 
         />
 
+       
         <Tab.Screen 
           name="Profile" 
           component={UserProfile}
@@ -87,13 +93,13 @@ const TabNavigator:React.FC = () => {
             
             tabBarActiveTintColor: 'black',  
             tabBarInactiveTintColor: 'black',
+            tabBarLabelPosition: 'below-icon',
             headerShown: false,
             tabBarIcon: ({focused}) =>
               focused? (
                 <Octicons name="person-fill" size={24} color="black" />
               ): (<Octicons name="person" size={24} color="black" />) }} 
         />
-
 
 
 
