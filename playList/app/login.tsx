@@ -19,7 +19,11 @@ const Login = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Image source={require("@/assets/images/myicon.png")} />
+        {/*<Image source={require("@/assets/images/myicon.png")} /> */}
+        <Image 
+                    source={require("@/assets/images/headphones.gif")}
+                    style={{ width: 250,height: 250,marginBottom: 20}}
+        />
         {/*<Image source={require("@/assets/images/playlist-logo.png")}  />*/}
         <Text style={styles.title}>PlayList</Text>
       </View>
