@@ -44,7 +44,7 @@ const TabNavigator:React.FC = () => {
               tabBarActiveTintColor: 'black',  
               tabBarInactiveTintColor: 'black',
               headerShown: false,
-              tabBarLabelPosition: 'below-icon',
+              tabBarShowLabel: false,
               
               tabBarIcon: ({focused}) =>
                 focused? (
@@ -61,7 +61,7 @@ const TabNavigator:React.FC = () => {
             headerShown: false,
             tabBarActiveTintColor: 'black',  
             tabBarInactiveTintColor: 'black',
-            tabBarLabelPosition: 'below-icon', 
+            tabBarShowLabel: false,
             
             tabBarIcon: ({focused}) =>
               focused? (
@@ -77,7 +77,7 @@ const TabNavigator:React.FC = () => {
             headerShown: false,
             tabBarActiveTintColor: 'black',  
             tabBarInactiveTintColor: 'black',
-            tabBarLabelPosition: 'below-icon',
+            tabBarShowLabel: false,
             
             tabBarIcon: ({focused}) =>
               focused? (
@@ -93,7 +93,7 @@ const TabNavigator:React.FC = () => {
             
             tabBarActiveTintColor: 'black',  
             tabBarInactiveTintColor: 'black',
-            tabBarLabelPosition: 'below-icon',
+            tabBarShowLabel: false,
             headerShown: false,
             tabBarIcon: ({focused}) =>
               focused? (
