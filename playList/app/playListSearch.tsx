@@ -3,6 +3,10 @@ import { View, TextInput} from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { fetchSongs } from "../services/spotifyService";
+import { fetchPodcasts } from "../services/spotifyService";
+import { fetchPodcastEpisodes } from "../services/spotifyService";
+import { fetchAudiobooks } from "../services/spotifyService";
+import { fetchAudiobookChapter } from "../services/spotifyService";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { styles } from "@/styles/style";
 
