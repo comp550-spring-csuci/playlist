@@ -21,15 +21,19 @@ const Podcasts = () => {
   } = usePaginatedData(fetchPodcasts, 50);
 
   const filteredPodcasts = podcasts.filter((item) => {
-     const title = item?.title || ""; 
-	 return title.toLowerCase().includes(searchQuery.toLowerCase());
+	const title = item?.name || "";
+	const publisher = item?.publisher || "";
+	return (
+		title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+		publisher.toLowerCase().includes(searchQuery.toLowerCase())
+	);
   });
 
     const toggleName = () => {
          setShowFullName(!showFullName);
        };
 
-   if (podcasts.length === 0 && !isFetchingMore) {
+	  if (podcasts.length === 0 && isFetchingMore) {
          return (
            <View style={styles.loadingContainer}>
              <ActivityIndicator size="large" color="#1DB954" />

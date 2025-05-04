@@ -21,15 +21,19 @@ const Audiobooks = () => {
   } = usePaginatedData(fetchAudiobooks, 50);
 
   const filteredAudiobooks = audiobooks.filter((item) => {
-     const title = item?.title || ""; 
-	 return title.toLowerCase().includes(searchQuery.toLowerCase());
+	const title = item?.name || "";
+	const publisher = item?.publisher || "";
+	return (
+		title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+		publisher.toLowerCase().includes(searchQuery.toLowerCase())
+	);
   });
 
       const toggleName = () => {
            setShowFullName(!showFullName);
          };
 
-       if (audiobooks.length === 0 && !isFetchingMore) {
+       if (audiobooks.length === 0 && isFetchingMore) {
                 return (
                   <View style={styles.loadingContainer}>
                     <ActivityIndicator size="large" color="#1DB954" />
