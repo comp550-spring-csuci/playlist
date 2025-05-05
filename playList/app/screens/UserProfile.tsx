@@ -41,7 +41,7 @@ const UserAccountScreen = () => {
       {/* Update and Log Out Buttons */}
       <View style={styles.buttonRow}>
         <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Update</Text>
+          <Text style={styles.buttonText}>Update Account</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Log Out</Text>
