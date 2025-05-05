@@ -58,7 +58,7 @@ const Playlists = () => {
       {/* List of Playlists */}
       {playlists.length === 0 ? (
         <View style={styles.centeredContent}>
-          <Text style={styles.emptyText}>No playlists found. Create one from Songs page!</Text>
+          <Text style={styles.emptyText}>No playlists found. Create one from the Home page!</Text>
         </View>
       ) : (
         
