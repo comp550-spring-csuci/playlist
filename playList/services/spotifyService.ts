@@ -1,5 +1,5 @@
-const CLIENT_ID = '5151f9c710d94ed3bcb85a48bd0ec706';
-const CLIENT_SECRET = 'cc6362cb14014cce81d7d4e555185b6b';
+const CLIENT_ID = '';
+const CLIENT_SECRET = '';
 const TOKEN_URL = "https://accounts.spotify.com/api/token";
 const PLAYLIST_ID = "3cEYpjA9oz9GiPac4AsH4n"; // Example playlist ID
 
@@ -153,3 +153,47 @@ export async function fetchCategoricalPlaylist(category:string) {
   return [];
   }
 }
+
+export async function fetchRelatedArtistTracks(trackId: string){
+  try{
+    console.log("Getting Spotify Token")
+    const token = await getSpotifyToken();
+    if (!token) {
+      console.error('token unavailable')
+      return[];
+    }
+    trackId = "11dFghVXANMlKmJXsNCbNl" //hardcoded track id
+    console.log("Song ID: ", trackId)
+
+    const response = await fetch(`https://api.spotify.com/v1/tracks/${trackId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (!response.ok){
+      console.error('failed to find song', response.status);
+      return[];
+    }
+
+    const data = await response.json();
+    console.log('track artist: ', data.artists[0].id); //shows artist id based on provided track
+
+
+    //pulls top tracks from identified artist
+    const responseTracks = await fetch(`https://api.spotify.com/v1/artists/${data.artists[0].id}/top-tracks`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });    
+    const artistTracks = await responseTracks.json();
+    
+    console.log(artistTracks.tracks[0].name); //displays top track by artist
+    
+    return artistTracks.tracks;
+
+  }
+
+  catch (error){
+    console.error(error);
+    return[];
+  }
+
+}
+
