@@ -5,8 +5,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { fetchSongs } from "../services/spotifyService";
+import { fetchCategories} from "../services/spotifyService";
 import usePaginatedData from "../hooks/usePaginatedData";
 import { styles } from "@/styles/style";
+import AudioPlayer from "@/components/AudioPlayer";
 
 const Songs = () => {
   const router = useRouter();
@@ -17,6 +19,9 @@ const Songs = () => {
   const [newPlaylistModalVisible, setNewPlaylistModalVisible] = useState(false);
   const [newPlaylistName, setNewPlaylistName] = useState("");
   const [showFullName, setShowFullName] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [previewUrl, setPreviewUrl] = useState("");
+  const [activeSong, setActiveSong] = useState<any | null>(null);
 
   const {
       data: songs,
@@ -39,6 +44,14 @@ const Songs = () => {
   };
   loadPlaylistsFromStorage();
     }, []);
+
+  useEffect(() => {
+      async function loadCategories() {
+          const categories = await fetchCategories();
+          setCategories(categories);
+      }
+      loadCategories();
+  }, []);
 
   const openModal = (song: any) => {
     setSelectedSong(song);
@@ -97,6 +110,41 @@ const Songs = () => {
           style={styles.searchInput}
         />
       </View>
+
+      <View style={{ paddingVertical: 10 }}>
+        <Text style={{ marginLeft: 16, fontSize: 18, fontWeight: "bold" }}>Top Categories</Text>
+        <FlatList
+          data={categories}
+          keyExtractor={(item) => item.id}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ paddingLeft: 16, paddingTop: 10 }}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              style={{ marginRight: 12 }}
+              onPress={() =>
+                router.push({
+                  pathname: `/categories/${item.name}`,
+                })
+              }
+            >
+              <View style={{ alignItems: "center" }}>
+                <Image
+                  source={{ uri: item.icons[0]?.url }}
+                  style={{ width: 100, height: 100, borderRadius: 8 }}
+                />
+                <Text
+                  style={{ maxWidth: 100, textAlign: "center", marginTop: 5 }}
+                  numberOfLines={1}
+                >
+                  {item.name}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          )}
+        />
+      </View>
+
          
        {filteredSongs.length === 0 ? (
          <View style={{ padding: 20 }}>
@@ -117,14 +165,21 @@ const Songs = () => {
             />
             <View style={styles.songDetails}>
               <Text style={styles.songTitle}>
-                {showFullName ? item.name : item.name.slice(0, 25) + (item.name.length > 25 ? "..." : "")}
+                {showFullName
+                    ? item.name
+                    : `${item.name.slice(0, 25)}${item.name.length > 25 ? "..." : ""}`}
               </Text>
               <Text style={styles.songArtist}>
-                {showFullName ? item.artists[0].name : item.artists[0].name.slice(0, 25) + (item.artists[0].name.length > 25 ? "..." : "")}
+                {showFullName
+                    ? item.artists[0].name
+                    : `${item.artists[0].name.slice(0, 25)}${item.artists[0].name.length > 25 ? "..." : ""}`}
               </Text>
             </View>
             <TouchableOpacity
-              onPress={() => Linking.openURL(item.external_urls.spotify)}
+              onPress={() => {
+              setPreviewUrl(item.preview_url);
+              setActiveSong(item);
+            }}
             >
               <Ionicons name="play-circle" size={28} color="#1DB954" />
             </TouchableOpacity>
@@ -216,6 +271,17 @@ const Songs = () => {
 </Modal>
 
 
+    {activeSong && (
+      <AudioPlayer
+        previewUrl={previewUrl}
+        songName={activeSong.name}
+        artistName={activeSong.artists[0].name}
+        onClose={() => {
+          setPreviewUrl("");
+          setActiveSong(null);
+        }}
+      />
+    )}
     </SafeAreaView>
   );
 };

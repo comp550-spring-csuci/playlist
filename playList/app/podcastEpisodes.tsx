@@ -6,12 +6,15 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { styles } from "@/styles/style";
 import { fetchPodcastEpisodes } from "../services/spotifyService";
 import usePaginatedData from "../hooks/usePaginatedData";
+import AudioPlayer from "@/components/AudioPlayer";
 
 const PodcastEpisodes = () => {
   const router = useRouter();
   const { podcast } = useLocalSearchParams();
   const show = JSON.parse(podcast);
   const [showFullDescription, setShowFullDescription] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState("");
+  const [activeEpisode, setActiveEpisode] = useState(null);
 
   const fetchPaginatedEpisodes = useCallback(
       async (offset: number, limit: number) => {
@@ -54,7 +57,10 @@ const PodcastEpisodes = () => {
          </Text>
          <Text style={styles.songArtist}>{formatDuration(item.duration_ms)}</Text>
        </View>
-       <TouchableOpacity onPress={() => Linking.openURL(item.external_urls.spotify)}>
+       <TouchableOpacity
+         onPress={() => {
+             setPreviewUrl(item.audio_preview_url);
+             setActiveEpisode(item);}}>
          <Ionicons name="play-circle" size={28} color="#1DB954" />
        </TouchableOpacity>
        <TouchableOpacity>
@@ -112,6 +118,17 @@ const PodcastEpisodes = () => {
                             ) : null
                   }
                 />
+      {activeEpisode && (
+        <AudioPlayer
+          previewUrl={previewUrl}
+          songName={activeEpisode.name}
+          artistName={show.publisher}  // or something like item.show.name
+          onClose={() => {
+            setPreviewUrl("");
+            setActiveEpisode(null);
+          }}
+        />
+      )}
       </SafeAreaView>
     );
 };
