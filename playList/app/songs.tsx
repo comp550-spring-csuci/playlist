@@ -9,6 +9,7 @@ import { fetchCategories} from "../services/spotifyService";
 import usePaginatedData from "../hooks/usePaginatedData";
 import { styles } from "@/styles/style";
 import AudioPlayer from "@/components/AudioPlayer";
+import { Alert, Platform } from "react-native";
 
 const Songs = () => {
   const router = useRouter();
@@ -78,7 +79,12 @@ const Songs = () => {
     setNewPlaylistModalVisible(false);
     setNewPlaylistName("");
     closeModal();
-    router.push("/playlist");
+       if (Platform.OS === 'web') {
+    alert(`"${newPlaylist.name}" was created and the song was added.`);
+  } else {
+    Alert.alert("Playlist Created", `"${newPlaylist.name}" was created and the song was added.`);
+  }
+
   };
 
   const toggleName = () => {
