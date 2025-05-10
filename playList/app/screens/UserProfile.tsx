@@ -9,10 +9,12 @@ import {
 } from 'react-native';
 import { auth, db } from "@/services/firebase";
 import { doc, getDoc } from "firebase/firestore";
-
+import { signOut } from 'firebase/auth';
+import { useRouter } from "expo-router";
 
 const UserAccountScreen = () => {
   const [userData, setUserData] = useState<any>(null);
+  const router = useRouter();
 
     useEffect(() => {
       const fetchUserProfile = async () => {
@@ -29,6 +31,17 @@ const UserAccountScreen = () => {
       fetchUserProfile();
     }, []);
 
+
+    const logout = async () => {
+      console.log('Logout pressed');
+      try {
+        await signOut(auth);
+        router.navigate("../login");
+      } catch (error) {
+        console.error('Logout Error:', error);
+      }
+    };
+    
 
   return (
     <SafeAreaView style={styles.container}>
@@ -66,7 +79,7 @@ const UserAccountScreen = () => {
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Update Account</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={logout}>
           <Text style={styles.buttonText}>Log Out</Text>
         </TouchableOpacity>
       </View>
@@ -75,6 +88,8 @@ const UserAccountScreen = () => {
 };
 
 export default UserAccountScreen;
+
+
 
 const styles = StyleSheet.create({
   container: {
