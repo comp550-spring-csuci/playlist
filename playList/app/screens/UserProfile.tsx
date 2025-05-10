@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,9 +7,29 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
+import { auth, db } from "@/services/firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 
 const UserAccountScreen = () => {
+  const [userData, setUserData] = useState<any>(null);
+
+    useEffect(() => {
+      const fetchUserProfile = async () => {
+        const user = auth.currentUser;
+        if (user) {
+          const userRef = doc(db, "users", user.uid);
+          const docSnap = await getDoc(userRef);
+          if (docSnap.exists()) {
+            setUserData(docSnap.data());
+          }
+        }
+      };
+
+      fetchUserProfile();
+    }, []);
+
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Header + Divider */}
@@ -31,10 +51,13 @@ const UserAccountScreen = () => {
             style={styles.profileImage} />
         <View style={styles.profileDetails}>
           <Text style={styles.detailLabel}>Name:</Text>
-          <Text style={styles.detailValue}>John Doe</Text>
+          <Text style={styles.detailValue}>{userData?.fullName || "Loading..."}</Text>
 
           <Text style={styles.detailLabel}>Email:</Text>
-          <Text style={styles.detailValue}>johndoe@gmail.com</Text>
+          <Text style={styles.detailValue}>{userData?.email || "Loading..."}</Text>
+
+          <Text style={styles.detailLabel}>Phone:</Text>
+          <Text style={styles.detailValue}>{userData?.phone || "Loading..."}</Text>
         </View>
       </View>
 
@@ -121,7 +144,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignSelf: 'center',
-    width: '80%',
+    width: '90%',
     marginTop: 10,
   },
   button: {

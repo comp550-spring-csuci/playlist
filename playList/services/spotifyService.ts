@@ -130,3 +130,15 @@ export async function fetchCategoricalPlaylist(category: string) {
   const data = await fetchSpotify(`https://api.spotify.com/v1/search?q=${encodedCategory}&type=playlist`);
   return data?.playlists?.items?.filter((item: any) => item !== null) || [];
 }
+
+export async function fetchRelatedArtistTracks(trackId: string){
+  const token = await getSpotifyToken();
+  const response = await fetch(`https://api.spotify.com/v1/tracks/${trackId}`, {headers: { Authorization: `Bearer ${token}` },});
+
+  const data = await response.json();
+
+  const responseTracks = await fetch(`https://api.spotify.com/v1/artists/${data.artists[0].id}/top-tracks`, {headers: { Authorization: `Bearer ${token}` },});
+
+  const artistTracks = await responseTracks.json();
+  return artistTracks.tracks;
+}

@@ -5,6 +5,8 @@ import MyButton from "@/components/MyButton";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/services/firebase"; // ✅ make sure firebase.js is setup in services/
 import { styles } from "@/styles/style";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "@/services/firebase";
 
 const SignUp = () => {
   const router = useRouter();
@@ -22,7 +24,16 @@ const SignUp = () => {
     }
 
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Save to Firestore
+      await setDoc(doc(db, "users", user.uid), {
+        fullName,
+        email,
+        phone,
+        createdAt: new Date(),
+      });
       setError("");
       router.navigate("/AppTabs");
     } catch (error: any) {
