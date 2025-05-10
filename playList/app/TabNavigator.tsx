@@ -21,7 +21,6 @@ const TabNavigator:React.FC = () => {
           borderTopWidth: 0,
         },
         
-        
         tabBarItemStyle: {
           flexBasis: 0,
           flexGrow: 1,
