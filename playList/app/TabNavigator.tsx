@@ -22,13 +22,13 @@ const TabNavigator:React.FC = () => {
         },
         
         tabBarItemStyle: {
-          flex: 1,
+          flexBasis: 0,
+          flexGrow: 1,
           justifyContent: 'center',
           alignItems: 'center',
         },
 
         tabBarIconStyle: {
-          flex: 1,
           justifyContent: 'center',
           alignItems: 'center',
         }
