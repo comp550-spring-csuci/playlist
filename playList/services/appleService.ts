@@ -12,12 +12,12 @@ const APPLE_MUSIC_API_URL = 'https://api.music.apple.com/v1/catalog/us'; // 'us'
     //activities, albums, apple-curators, artists, curators, music-videos, playlists, record-labels, stations
 export async function searchAppleMusicSongs(query: string, limit: number = 10) {
     const encodedQuery = encodeURIComponent(query);
-    const response = await fetch(`${APPLE_MUSIC_API_URL}/search?term=${encodedQuery}&types=songs&limit=${limit}`, { //replace types=songs with albums or artists for differing results
+    const response = await fetch(`${APPLE_MUSIC_API_URL}/search?term=${encodedQuery}&types=music-videos&limit=${limit}`, { //replace types=songs with albums or artists for differing results
         method: 'GET',headers: {Authorization: `Bearer ${APPLE_MUSIC_DEVELOPER_TOKEN}`,},});
 
     const searchData = await response.json();
-    //console.log(data);
-    return searchData.results?.songs?.data || [];
+    console.log(searchData);
+    return searchData.results?.['music-videos']?.data || [];
   }
 
 
