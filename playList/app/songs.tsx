@@ -9,6 +9,7 @@ import { fetchCategories} from "../services/spotifyService";
 import usePaginatedData from "../hooks/usePaginatedData";
 import { styles } from "@/styles/style";
 import AudioPlayer from "@/components/AudioPlayer";
+import { importLyrics } from "../services/importLyrics";
 
 const Songs = () => {
   const router = useRouter();
@@ -22,6 +23,10 @@ const Songs = () => {
   const [categories, setCategories] = useState([]);
   const [previewUrl, setPreviewUrl] = useState("");
   const [activeSong, setActiveSong] = useState<any | null>(null);
+  const [lyricsModalVisible, setLyricsModalVisible] = useState(false);
+  const [lyricsContent, setLyricsContent] = useState("");
+  const [lyricsUrl, setLyricsUrl] = useState("");
+
 
   const {
       data: songs,
@@ -84,8 +89,23 @@ const Songs = () => {
   const toggleName = () => {
        setShowFullName(!showFullName);
      };
+	 
+  const handleLyricsPress = async (artist: string, title: string) => {
+  const lyricsResult = await importLyrics(artist, title);
 
-  if (songs.length === 0 && !isFetchingMore) {
+    if (lyricsResult.lyrics === "Genius page") {
+      setLyricsContent("View full lyrics on Genius.");
+      setLyricsUrl(lyricsResult.url);
+
+    } else {
+        setLyricsContent("Lyrics not found.");
+        setLyricsUrl("");
+      }
+	  
+	   setLyricsModalVisible(true);
+    };
+
+	if (songs.length === 0 && !isFetchingMore) {
       return (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#1DB954" />
@@ -188,6 +208,11 @@ const Songs = () => {
             >
               <Ionicons name="add-circle" size={28} color="#1DB954" />
             </TouchableOpacity>
+			<TouchableOpacity 
+			  onPress={() => handleLyricsPress(item.artists[0].name, item.name)}
+			>
+			  <Ionicons name="document-text" size={24} color="#1DB954" />
+			</TouchableOpacity>
           </View>
         )}
         onEndReached={hasMore ? fetchMoreSongs : null}
@@ -268,7 +293,26 @@ const Songs = () => {
     </View>
   </View>
  
-</Modal>
+  </Modal>
+  
+  {/* Lyrics Modal */}
+      <Modal transparent visible={lyricsModalVisible} animationType="slide" onRequestClose={() => setLyricsModalVisible(false)}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Lyrics</Text>
+            {lyricsUrl ? (
+              <TouchableOpacity onPress={() => Linking.openURL(lyricsUrl)}>
+                <Text style={{ color: "#1DB954", textAlign: "center" }}>Open in Genius</Text>
+              </TouchableOpacity>
+            ) : (
+              <Text style={{ maxHeight: 300, marginVertical: 10 }}>{lyricsContent}</Text>
+            )}
+            <TouchableOpacity onPress={() => setLyricsModalVisible(false)}>
+              <Text style={styles.modalCancelText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
 
 
     {activeSong && (
