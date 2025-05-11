@@ -19,13 +19,16 @@ const TabNavigator:React.FC = () => {
         tabBarStyle: {
           backgroundColor: '#f5f5f5',
           borderTopWidth: 0,
+          flexDirection: 'row',
+          justifyContent: 'space-around', //to have even spacing between icons
+          alignItems: 'center',
         },
         
-        tabBarItemStyle: {
-            flex: 1, //to have tabs be evenly spaced
-            justifyContent: 'center', //align contents in the center
-            alignItems: 'center', //center the icons
-        }
+        headerShown: false, //to remove the header 
+        tabBarShowLabel: false, //hide icon text labels
+          
+        tabBarIconStyle: { marginBottom: 0 }, 
+        
         
       }}
       >
