@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { View, Text, TextInput, Image, FlatList, ActivityIndicator, TouchableOpacity, Linking, Modal } from "react-native";
+import { View, Text, TextInput, Image, FlatList, ActivityIndicator, TouchableOpacity, Platform, Linking, Modal } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from "expo-router";
@@ -9,7 +9,7 @@ import { fetchCategories} from "../services/spotifyService";
 import usePaginatedData from "../hooks/usePaginatedData";
 import { styles } from "@/styles/style";
 import AudioPlayer from "@/components/AudioPlayer";
-import { importLyrics } from "../services/importLyrics";
+//import { importLyrics } from "../services/importLyrics";
 
 const Songs = () => {
   const router = useRouter();
@@ -91,19 +91,17 @@ const Songs = () => {
      };
 	 
   const handleLyricsPress = async (artist: string, title: string) => {
-  const lyricsResult = await importLyrics(artist, title);
+	const result = encodeURIComponent(`${artist} ${title}`);
+	const geniusUrl = `https://genius.com/search?q=${result}`
 
-    if (lyricsResult.lyrics === "Genius page") {
-      setLyricsContent("View full lyrics on Genius.");
-      setLyricsUrl(lyricsResult.url);
-
-    } else {
-        setLyricsContent("Lyrics not found.");
-        setLyricsUrl("");
-      }
-	  
-	   setLyricsModalVisible(true);
-    };
+	if (Platform.OS === "web") {
+		window.open(geniusUrl, "_blank");
+	} else {
+		setLyricsContent("View full lyrics on Genius.");
+		setLyricsUrl(geniusUrl);
+		setLyricsModalVisible(true);
+	}
+  };
 
 	if (songs.length === 0 && !isFetchingMore) {
       return (
