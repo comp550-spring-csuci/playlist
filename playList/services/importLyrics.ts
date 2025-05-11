@@ -1,9 +1,9 @@
-export const importLyrics = async (artist: string, title: string) => {
+/*export const importLyrics = async (artist: string, title: string) => {
   try {
     const searchResult = encodeURIComponent(`${artist} ${title}`);
     const response = await fetch(`https://api.genius.com/search?q=${searchResult}`, {
       headers: {
-        Authorization: `Bearer GENIUS_AUTHORITIZATION_TOKEN`, //Leave blank when pushing to GitHub
+        Authorization: `Bearer YOUR_GENIUS_AUTHORITIZATION_TOKEN`, //Leave blank when pushing to GitHub
       },
     });
     const data = await response.json();
@@ -19,4 +19,4 @@ export const importLyrics = async (artist: string, title: string) => {
     console.error("Genius error", error);
     return { lyrics: null, url: null };
   }
-};
+};*/
