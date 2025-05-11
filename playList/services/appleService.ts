@@ -11,29 +11,26 @@ const APPLE_MUSIC_API_URL = 'https://api.music.apple.com/v1/catalog/us'; // 'us'
   //shows search for songs, can also search for:
     //activities, albums, apple-curators, artists, curators, music-videos, playlists, record-labels, stations
 export async function searchAppleMusicSongs(query: string, limit: number = 10) {
-  try {
     const encodedQuery = encodeURIComponent(query);
     const response = await fetch(`${APPLE_MUSIC_API_URL}/search?term=${encodedQuery}&types=songs&limit=${limit}`, { //replace types=songs with albums or artists for differing results
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${APPLE_MUSIC_DEVELOPER_TOKEN}`,
-      },
-    });
+        method: 'GET',headers: {Authorization: `Bearer ${APPLE_MUSIC_DEVELOPER_TOKEN}`,},});
 
-    if (!response.ok) {
-      console.error('Apple Music search failed:', response.statusText);
-      return null;
-    }
-
-    const data = await response.json();
-    console.log(data);
-    return data.results?.songs?.data || [];
-  } catch (error) {
-    console.error('Apple Music search error:', error);
-    return null;
+    const searchData = await response.json();
+    //console.log(data);
+    return searchData.results?.songs?.data || [];
   }
-}
 
+
+
+export async function fetchAppleMusicCharts(type: string, limit: number = 10) {
+    const response = await fetch(
+        `${APPLE_MUSIC_API_URL}/charts?types=${type}&limit=${limit}`,{method: 'GET', headers: {Authorization: `Bearer ${APPLE_MUSIC_DEVELOPER_TOKEN}`,},});
+      
+    const chartData = await response.json();
+    console.log('Chart data:', chartData);
+  
+    return chartData.results?.[type]?.[0]?.data || [];
+   }
 
 //get charts
   //albums, music-videos, playlists, songs

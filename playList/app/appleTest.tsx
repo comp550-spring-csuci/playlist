@@ -3,6 +3,7 @@ import { View, Text, TextInput, FlatList, Image, TouchableOpacity, ActivityIndic
 import { searchAppleMusicSongs } from '../services/appleService';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from '@/styles/style';
+//page designed to demonstrate appleService.ts functionality
 
 const AppleTest = () => {
   const [searchQuery, setSearchQuery] = useState('');
