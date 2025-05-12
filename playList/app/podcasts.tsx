@@ -17,6 +17,7 @@ import { styles } from "@/styles/style";
 import { fetchPodcasts } from "../services/spotifyService"; //function to fetch podcasts from Spotify
 import usePaginatedData from "../hooks/usePaginatedData";
 
+
 const Podcasts = () => {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");

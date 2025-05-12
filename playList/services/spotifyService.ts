@@ -7,6 +7,7 @@ const SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token";
 let cachedToken: string | null = null;
 let tokenExpiresAt: number = 0;
 
+
 // Internal function to fetch new token
 async function fetchNewToken(): Promise<string | null> {
   try {
