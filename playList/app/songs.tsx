@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { View, Text, TextInput, Image, FlatList, ActivityIndicator, TouchableOpacity, Platform, Linking, Modal } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -9,6 +10,8 @@ import { fetchCategories} from "../services/spotifyService";
 import usePaginatedData from "../hooks/usePaginatedData";
 import { styles } from "@/styles/style";
 import AudioPlayer from "@/components/AudioPlayer";
+//0
+import {searchAppleMusicSongs, fetchAppleMusicCharts} from "../services/appleService";
 //import { importLyrics } from "../services/importLyrics";
 
 const Songs = () => {
@@ -27,18 +30,43 @@ const Songs = () => {
   const [lyricsContent, setLyricsContent] = useState("");
   const [lyricsUrl, setLyricsUrl] = useState("");
 
-
   const {
-      data: songs,
       isFetchingMore,
       hasMore,
       fetchData: fetchMoreSongs,
     } = usePaginatedData(fetchSongs, 50);
 
+  const [songs, setSongs] = useState<any[]>([]); //1
+  const [isLoading,setisLoading] = useState<boolean>(true);//1
+
   const filteredSongs = songs.filter((item) =>
-    item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    item.artists[0].name.toLowerCase().includes(searchQuery.toLowerCase())
+    //4
+    item.attributes.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    item.attributes.artistName.toLowerCase().includes(searchQuery.toLowerCase())
+    //item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    //item.artists[0].name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const currentIndex = filteredSongs.findIndex(song => song.id === activeSong?.id);
+
+  const handleNext = () => {
+    const nextIndex = currentIndex + 1;
+    if (nextIndex < filteredSongs.length) {
+      const nextSong = filteredSongs[nextIndex];
+      setActiveSong(nextSong);
+      setPreviewUrl(nextSong.attributes.previews?.[0]?.url || "");
+    }
+  };
+
+const handlePrevious = () => {
+  const prevIndex = currentIndex - 1;
+  if (prevIndex >= 0) {
+    const prevSong = filteredSongs[prevIndex];
+    setActiveSong(prevSong);
+    setPreviewUrl(prevSong.attributes.previews?.[0]?.url || "");
+  }
+};
+
 
   useEffect(() => {
   const loadPlaylistsFromStorage = async () => {
@@ -57,6 +85,25 @@ const Songs = () => {
       }
       loadCategories();
   }, []);
+
+  //2 Loads top charts if no search input, replaces with searched on input
+  useEffect(() =>{
+    if (searchQuery.length ==0){
+      setisLoading(true);
+      fetchAppleMusicCharts("songs",25).then((chart) =>{
+        setSongs(chart);
+        setisLoading(false);
+      });
+    } else {
+      setisLoading(true);
+      searchAppleMusicSongs(searchQuery, 25).then((results) => {
+        setSongs(results);
+        setisLoading(false);
+      });
+    }
+  }, [searchQuery]);
+  //2 end
+
 
   const openModal = (song: any) => {
     setSelectedSong(song);
@@ -178,24 +225,29 @@ const Songs = () => {
         renderItem={({ item }) => (
           <View style={styles.songCard}>
             <Image
-              source={{ uri: item.album.images[0].url }}
+              //3
+              source = {{uri : item.attributes.artwork.url.replace("{w}","100").replace("{h}","100")}}
+              //source={{ uri: item.album.images[0].url }}
               style={styles.songImage}
             />
             <View style={styles.songDetails}>
               <Text style={styles.songTitle}>
                 {showFullName
-                    ? item.name
-                    : `${item.name.slice(0, 25)}${item.name.length > 25 ? "..." : ""}`}
+                    ? item.attributes.name
+                    : `${item.attributes.name.slice(0, 25)}${item.attributes.name.length > 25 ? "..." : ""}`}
               </Text>
               <Text style={styles.songArtist}>
+                
                 {showFullName
-                    ? item.artists[0].name
-                    : `${item.artists[0].name.slice(0, 25)}${item.artists[0].name.length > 25 ? "..." : ""}`}
+                    ? item.attributes.artistName
+                    : `${item.attributes.artistName.slice(0, 25)}${item.attributes.artistName.length > 25 ? "..." : ""}`}
               </Text>
             </View>
             <TouchableOpacity
               onPress={() => {
-              setPreviewUrl(item.preview_url);
+              //3
+              setPreviewUrl(item.attributes.previews?.[0]?.url);
+              //setPreviewUrl(item.preview_url);
               setActiveSong(item);
             }}
             >
@@ -207,7 +259,7 @@ const Songs = () => {
               <Ionicons name="add-circle" size={28} color="#1DB954" />
             </TouchableOpacity>
 			<TouchableOpacity 
-			  onPress={() => handleLyricsPress(item.artists[0].name, item.name)}
+			  onPress={() => handleLyricsPress(item.attributes.artistName, item.attributes.name)}
 			>
 			  <Ionicons name="document-text" size={24} color="#1DB954" />
 			</TouchableOpacity>
@@ -315,12 +367,14 @@ const Songs = () => {
     {previewUrl && activeSong && (
       <AudioPlayer
         previewUrl={previewUrl}
-        songName={activeSong.name}
-        artistName={activeSong.artists[0].name}
+        songName={activeSong.attributes.name}
+        artistName={activeSong.attributes.artistName}
         onClose={() => {
           setPreviewUrl("");
           setActiveSong(null);
         }}
+        onNext={handleNext}
+        onPrevious={handlePrevious}
       />
     )}
     </SafeAreaView>
