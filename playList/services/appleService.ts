@@ -10,16 +10,25 @@ const APPLE_MUSIC_API_URL = 'https://api.music.apple.com/v1/catalog/us'; // 'us'
 // search for category resources
   //shows search for songs, can also search for:
     //activities, albums, apple-curators, artists, curators, music-videos, playlists, record-labels, stations
-export async function searchAppleMusicSongs(query: string, limit: number = 10) {
+export async function searchAppleMusicSongs(query: string, limit: number = 25) {
+    const encodedQuery = encodeURIComponent(query);
+    const response = await fetch(`${APPLE_MUSIC_API_URL}/search?term=${encodedQuery}&types=songs&limit=${limit}`, { //replace types=songs with albums or artists for differing results
+        method: 'GET',headers: {Authorization: `Bearer ${APPLE_MUSIC_DEVELOPER_TOKEN}`,},});
+
+    const searchData = await response.json();
+    //console.log(searchData);
+    return searchData.results?.songs?.data || [];
+  }
+
+export async function searchAppleMusicVideos(query: string, limit: number = 10) {
     const encodedQuery = encodeURIComponent(query);
     const response = await fetch(`${APPLE_MUSIC_API_URL}/search?term=${encodedQuery}&types=music-videos&limit=${limit}`, { //replace types=songs with albums or artists for differing results
         method: 'GET',headers: {Authorization: `Bearer ${APPLE_MUSIC_DEVELOPER_TOKEN}`,},});
 
     const searchData = await response.json();
-    console.log(searchData);
+    //console.log(searchData);
     return searchData.results?.['music-videos']?.data || [];
   }
-
 
 
 export async function fetchAppleMusicCharts(type: string, limit: number = 10) {
