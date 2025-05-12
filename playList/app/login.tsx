@@ -5,6 +5,9 @@ import MyButton from "@/components/MyButton";
 import { styles } from "@/styles/style";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/services/firebase";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/services/firebase";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Login = () => {
   const router = useRouter();
@@ -14,7 +17,23 @@ const Login = () => {
 
   const onLogin = async () => {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      console.log("Login successful:", user.uid);
+      // Fetch user profile from Firestore
+      const userRef = doc(db, "users", user.uid);
+      const userSnap = await getDoc(userRef);
+
+      if (userSnap.exists()) {
+            const userData = userSnap.data();
+            console.log("User Data:", userData);
+              if (userData.fullName) {
+                await AsyncStorage.setItem("fullName", userData.fullName);
+              } else {
+                console.warn("userData.fullName is undefined");
+              }
+          }
+
       setError("");
       router.navigate("/AppTabs");
     } catch (error) {

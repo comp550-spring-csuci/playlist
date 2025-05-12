@@ -74,13 +74,13 @@ const Songs = () => {
     await AsyncStorage.setItem("playlists", JSON.stringify(updatedPlaylists));
     setPlaylists(updatedPlaylists);
   };
-  
+
   const handleCreatePlaylist = () => {
     const newPlaylist = {
       name: newPlaylistName,
       songs: [selectedSong],
     };
-  
+
     const updatedPlaylists = [...playlists, newPlaylist];
     savePlaylists(updatedPlaylists);
     setNewPlaylistModalVisible(false);
@@ -166,7 +166,7 @@ const Songs = () => {
         />
       </View>
 
-         
+
        {filteredSongs.length === 0 ? (
          <View style={{ padding: 20 }}>
                <Text style={{ textAlign: "center", fontSize: 16, color: "gray" }}>
@@ -315,6 +315,8 @@ const Songs = () => {
         </View>
       </Modal>
 
+    {previewUrl && activeSong && (
+      <AudioPlayer
 
     {activeSong && (
       <MultiPlayer
