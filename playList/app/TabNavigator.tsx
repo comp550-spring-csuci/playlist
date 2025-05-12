@@ -19,11 +19,17 @@ const TabNavigator:React.FC = () => {
         tabBarStyle: {
           backgroundColor: '#f5f5f5',
           borderTopWidth: 0,
-          justifyContent: 'center'
+          flexDirection: 'row',
+          justifyContent: 'space-around', //to have even spacing between icons
+          alignItems: 'center',
         },
-        tabBarItemStyle: {
-          flex: 1
-        }
+        
+        headerShown: false, //to remove the header 
+        tabBarShowLabel: false, //hide icon text labels
+          
+        tabBarIconStyle: { marginBottom: 0 }, 
+        
+        
       }}
       >
         <Tab.Screen 
@@ -36,7 +42,7 @@ const TabNavigator:React.FC = () => {
               tabBarIcon: ({focused}) =>
                 focused? (
                   <Entypo name="home" size={24} color="black" />
-                ): (<AntDesign name="home" size={24} color="black" />) }} 
+                ): (<AntDesign name="home" size={24} color="black" />) }}
         />
 
         <Tab.Screen 
@@ -49,7 +55,7 @@ const TabNavigator:React.FC = () => {
             tabBarIcon: ({focused}) =>
               focused? (
                 <MaterialCommunityIcons name="playlist-music" size={24} color="black" />
-              ): (<MaterialCommunityIcons name="playlist-music-outline" size={24} color="black" />) }}  
+              ): (<MaterialCommunityIcons name="playlist-music-outline" size={24} color="black" />) }}
         />
 
         <Tab.Screen 
@@ -62,7 +68,7 @@ const TabNavigator:React.FC = () => {
             tabBarIcon: ({focused}) =>
               focused? (
                 <Ionicons name="download" size={24} color="black" />
-              ): (<Ionicons name="download-outline" size={24} color="black" />) }} 
+              ): (<Ionicons name="download-outline" size={24} color="black" />) }}
         />
 
         <Tab.Screen 
@@ -75,7 +81,7 @@ const TabNavigator:React.FC = () => {
             tabBarIcon: ({focused}) =>
               focused? (
                 <Octicons name="person-fill" size={24} color="black" />
-              ): (<Octicons name="person" size={24} color="black" />) }} 
+              ): (<Octicons name="person" size={24} color="black" />) }}
         />
 
 

@@ -12,7 +12,7 @@ const CARD_WIDTH = width / 2 - 15; // Two cards per row with spacing
 
 const Videos = () => {
   const router = useRouter();
-  const [searchQuery, setSearchQuery] = useState("latest music");
+  const [searchQuery, setSearchQuery] = useState("kendrick lamar");
   const [videos, setVideos] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -43,6 +43,20 @@ const Videos = () => {
     }
   };
 
+  const downloadVideo = async (videoId: string, title: string) => {
+    console.log("Downloading:", videoId, title);
+    try {
+      await fetch("http://10.31.208.44:8000/download", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ videoId, title }),
+      });
+      console.log("Download started. Check Downloads page in a few seconds.");
+    } catch (err) {
+      console.log("Failed to start download.");
+    }
+  };
+
   const renderItem = ({ item }) => (
     <TouchableOpacity
       style={{
@@ -65,13 +79,19 @@ const Videos = () => {
         resizeMode="cover"
       />
       <View style={{ padding: 10 }}>
-        <Text style={{ fontWeight: "600", fontSize: 14 }} numberOfLines={2}>
-          {item.snippet.title}
-        </Text>
-        <Text style={{ fontSize: 12, color: "gray", marginTop: 4 }} numberOfLines={1}>
-          {item.snippet.channelTitle}
-        </Text>
-      </View>
+          <Text style={{ fontWeight: "600", fontSize: 14 }} numberOfLines={2}>
+            {item.snippet.title}
+          </Text>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 2 }}>
+              <Text style={{ fontSize: 12, color: "gray", flexShrink: 1 }} numberOfLines={1}>
+                {item.snippet.channelTitle}
+              </Text>
+              <TouchableOpacity onPress={() => downloadVideo(item.id.videoId, item.snippet.title)}>
+                <Ionicons name="download" size={20} color="#1DB954" />
+              </TouchableOpacity>
+            </View>
+        </View>
+
     </TouchableOpacity>
   );
 

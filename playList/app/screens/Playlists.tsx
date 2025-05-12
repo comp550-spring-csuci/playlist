@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, TouchableOpacity, Alert } from "react-native";
+import { View, Text, FlatList, TouchableOpacity, Alert, Image, StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
@@ -46,14 +46,18 @@ const Playlists = () => {
   };
 
   return (
-    <SafeAreaView style={styles.safeAreaContainer}>
-      {/* Header */}
-      <View style={styles.headerContainer}>
-        <TouchableOpacity onPress={() => router.push("/AppTabs")} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="black" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Playlists</Text>
-      </View>
+    <SafeAreaView style={style.container}>
+      {/* Header + Divider */}
+        <View style={style.headerContainer}>
+          <View style={style.header}>
+          <Image
+            source={require("@/assets/images/myicon.png")}
+            style={style.icon}
+          />
+            <Text style={style.headerText}>Playlists</Text>
+          </View>
+          <View style={style.divider} />
+        </View>
 
       {/* List of Playlists */}
       {playlists.length === 0 ? (
@@ -119,3 +123,89 @@ const Playlists = () => {
 };
 
 export default Playlists;
+
+const style = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    paddingTop: 60,
+    paddingHorizontal: 20,
+  },
+  headerContainer: {
+    width: '100%',
+    alignSelf: 'center',
+    marginBottom: 20,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    marginBottom: 10,
+  },
+  icon: {
+    marginRight: 10,
+    width:50,
+    height: 50
+
+  },
+  headerText: {
+    fontSize: 20,
+    fontWeight: '600',
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#000',
+    width: '100%',
+  },
+  profileCard: {
+    flexDirection: 'row',
+    backgroundColor: '#E0E8FF',
+    borderWidth: 2,
+    borderColor: '#00C853',
+    borderRadius: 12,
+    padding: 20,
+    alignSelf: 'center',
+    width: '90%',
+    height: 160,
+    marginBottom: 20,
+  },
+  profileImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 12,
+    marginRight: 20,
+    backgroundColor: '#ccc',
+  },
+  profileDetails: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  detailLabel: {
+    fontWeight: '600',
+    fontSize: 16,
+  },
+  detailValue: {
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignSelf: 'center',
+    width: '90%',
+    marginTop: 10,
+  },
+  button: {
+    backgroundColor:  '#1DB954',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 25,
+    alignItems: 'center',
+    flex: 0.45,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 16,
+  },
+});

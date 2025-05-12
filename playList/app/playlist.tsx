@@ -35,11 +35,11 @@ const Playlist = () => {
         console.error("Failed to load playlists:", error);
       }
     };
-    
+
     loadPlaylists();
   }, []);
 
-  const deletePlaylist = async (index: number) => { 
+  const deletePlaylist = async (index: number) => {
          const updatedPlaylists = [...playlists];
             updatedPlaylists.splice(index, 1);
             setPlaylists(updatedPlaylists);
@@ -62,19 +62,26 @@ const Playlist = () => {
           <Text style={styles.emptyText}>No playlists found. Create one from Songs page!</Text>
         </View>
       ) : (
-        
+
         <FlatList
         data={playlists}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item, index }) => (
-          <View style={styles.songCard}>
+          <TouchableOpacity
+                        style={styles.songCard}
+                        onPress={() => router.push({
+                          pathname: '/playlistSongs',
+                          params: { playlist: JSON.stringify(item) }
+                        })}
+                      >
+
             <View style={{ flex: 1 }}>
               <Text style={styles.playlistName}>{item.name}</Text>
               <Text style={styles.playlistSongCount}>{item.songs.length} song(s)</Text>
             </View>
-      
-         
-      
+
+
+
             {/* Plus Icon to Add Song to Playlist */}
             <TouchableOpacity
               onPress={async () => {
@@ -82,13 +89,13 @@ const Playlist = () => {
                   Alert.alert("Song Already Added", "You can only add the song to one playlist in this session.");
                   return;
                 }
-      
+
                 if (incomingSong) {
                   const updatedPlaylists = [...playlists];
                   const alreadyExists = updatedPlaylists[index].songs.some(
                     (song) => song.id === incomingSong.id
                   );
-      
+
                   if (!alreadyExists) {
                     updatedPlaylists[index].songs.push(incomingSong);
                     await AsyncStorage.setItem("playlists", JSON.stringify(updatedPlaylists));
@@ -113,10 +120,10 @@ const Playlist = () => {
                <TouchableOpacity onPress={() => deletePlaylist(index)}>
               <Ionicons name="trash-outline" size={24} color="red" />
             </TouchableOpacity>
-          </View>
+          </TouchableOpacity>
         )}
       />
-      
+
 
       )}
     </SafeAreaView>
