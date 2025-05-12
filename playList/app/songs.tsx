@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { View, Text, TextInput, Image, FlatList, ActivityIndicator, TouchableOpacity, Linking, Modal } from "react-native";
+import { View, Text, TextInput, Image, FlatList, ActivityIndicator, TouchableOpacity, Platform, Linking, Modal } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from "expo-router";
@@ -9,6 +9,7 @@ import { fetchCategories} from "../services/spotifyService";
 import usePaginatedData from "../hooks/usePaginatedData";
 import { styles } from "@/styles/style";
 import AudioPlayer from "@/components/AudioPlayer";
+//import { importLyrics } from "../services/importLyrics";
 
 const Songs = () => {
   const router = useRouter();
@@ -22,6 +23,10 @@ const Songs = () => {
   const [categories, setCategories] = useState([]);
   const [previewUrl, setPreviewUrl] = useState("");
   const [activeSong, setActiveSong] = useState<any | null>(null);
+  const [lyricsModalVisible, setLyricsModalVisible] = useState(false);
+  const [lyricsContent, setLyricsContent] = useState("");
+  const [lyricsUrl, setLyricsUrl] = useState("");
+
 
   const {
       data: songs,
@@ -66,13 +71,13 @@ const Songs = () => {
     await AsyncStorage.setItem("playlists", JSON.stringify(updatedPlaylists));
     setPlaylists(updatedPlaylists);
   };
-  
+
   const handleCreatePlaylist = () => {
     const newPlaylist = {
       name: newPlaylistName,
       songs: [selectedSong],
     };
-  
+
     const updatedPlaylists = [...playlists, newPlaylist];
     savePlaylists(updatedPlaylists);
     setNewPlaylistModalVisible(false);
@@ -84,8 +89,21 @@ const Songs = () => {
   const toggleName = () => {
        setShowFullName(!showFullName);
      };
+	 
+  const handleLyricsPress = async (artist: string, title: string) => {
+	const result = encodeURIComponent(`${artist} ${title}`);
+	const geniusUrl = `https://genius.com/search?q=${result}`
 
-  if (songs.length === 0 && !isFetchingMore) {
+	if (Platform.OS === "web") {
+		window.open(geniusUrl, "_blank");
+	} else {
+		setLyricsContent("View full lyrics on Genius.");
+		setLyricsUrl(geniusUrl);
+		setLyricsModalVisible(true);
+	}
+  };
+
+	if (songs.length === 0 && !isFetchingMore) {
       return (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#1DB954" />
@@ -145,7 +163,7 @@ const Songs = () => {
         />
       </View>
 
-         
+
        {filteredSongs.length === 0 ? (
          <View style={{ padding: 20 }}>
                <Text style={{ textAlign: "center", fontSize: 16, color: "gray" }}>
@@ -188,6 +206,11 @@ const Songs = () => {
             >
               <Ionicons name="add-circle" size={28} color="#1DB954" />
             </TouchableOpacity>
+			<TouchableOpacity 
+			  onPress={() => handleLyricsPress(item.artists[0].name, item.name)}
+			>
+			  <Ionicons name="document-text" size={24} color="#1DB954" />
+			</TouchableOpacity>
           </View>
         )}
         onEndReached={hasMore ? fetchMoreSongs : null}
@@ -268,10 +291,28 @@ const Songs = () => {
     </View>
   </View>
  
-</Modal>
+  </Modal>
+  
+  {/* Lyrics Modal */}
+      <Modal transparent visible={lyricsModalVisible} animationType="slide" onRequestClose={() => setLyricsModalVisible(false)}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Lyrics</Text>
+            {lyricsUrl ? (
+              <TouchableOpacity onPress={() => Linking.openURL(lyricsUrl)}>
+                <Text style={{ color: "#1DB954", textAlign: "center" }}>Open in Genius</Text>
+              </TouchableOpacity>
+            ) : (
+              <Text style={{ maxHeight: 300, marginVertical: 10 }}>{lyricsContent}</Text>
+            )}
+            <TouchableOpacity onPress={() => setLyricsModalVisible(false)}>
+              <Text style={styles.modalCancelText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
 
-
-    {activeSong && (
+    {previewUrl && activeSong && (
       <AudioPlayer
         previewUrl={previewUrl}
         songName={activeSong.name}

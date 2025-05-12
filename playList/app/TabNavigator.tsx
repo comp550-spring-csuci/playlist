@@ -42,7 +42,7 @@ const TabNavigator:React.FC = () => {
               tabBarIcon: ({focused}) =>
                 focused? (
                   <Entypo name="home" size={24} color="black" />
-                ): (<AntDesign name="home" size={24} color="black" />) }} 
+                ): (<AntDesign name="home" size={24} color="black" />) }}
         />
 
         <Tab.Screen 
@@ -55,7 +55,7 @@ const TabNavigator:React.FC = () => {
             tabBarIcon: ({focused}) =>
               focused? (
                 <MaterialCommunityIcons name="playlist-music" size={24} color="black" />
-              ): (<MaterialCommunityIcons name="playlist-music-outline" size={24} color="black" />) }}  
+              ): (<MaterialCommunityIcons name="playlist-music-outline" size={24} color="black" />) }}
         />
 
         <Tab.Screen 
@@ -68,7 +68,7 @@ const TabNavigator:React.FC = () => {
             tabBarIcon: ({focused}) =>
               focused? (
                 <Ionicons name="download" size={24} color="black" />
-              ): (<Ionicons name="download-outline" size={24} color="black" />) }} 
+              ): (<Ionicons name="download-outline" size={24} color="black" />) }}
         />
 
         <Tab.Screen 
@@ -81,7 +81,7 @@ const TabNavigator:React.FC = () => {
             tabBarIcon: ({focused}) =>
               focused? (
                 <Octicons name="person-fill" size={24} color="black" />
-              ): (<Octicons name="person" size={24} color="black" />) }} 
+              ): (<Octicons name="person" size={24} color="black" />) }}
         />
 
 
