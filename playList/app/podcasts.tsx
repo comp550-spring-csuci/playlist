@@ -75,7 +75,7 @@ const Podcasts = () => {
         selectedValue={selectedCategory}
         onValueChange={(itemValue) => setSelectedCategory(itemValue)}
         mode="dropdown"
-        style={{ height: 32, width: 90, marginLeft: 70, fontSize: 13}}
+        style={{ height: 32, width: 92, marginLeft: 70, fontSize: 14}}
         >
           <Picker.Item label="Comedy" value="Comedy" />
           <Picker.Item label="Technology" value="Technology" />

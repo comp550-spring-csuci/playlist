@@ -86,7 +86,7 @@ export async function fetchPodcasts(category = "Comedy", offset = 0, limit = 50)
   const query = category === "Categories..." ? "Comedy" : category; // default to Comedy if "Categories..." is selected
 
   //Spotify API request
-  const data = await fetchSpotify(https://api.spotify.com/v1/search?q=${query}&type=show&limit=${limit}&offset=${offset});
+  const data = await fetchSpotify(`https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=show&limit=${limit}&offset=${offset}`);
 
   //to determine category of fetched podcasts
   console.log("Fetching Podcasts for Category:", query);
