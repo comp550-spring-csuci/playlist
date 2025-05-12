@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, TouchableOpacity, Alert } from "react-native";
+import { View, Text, FlatList, TouchableOpacity } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { styles } from "@/styles/style";
 import { useLocalSearchParams } from "expo-router";
+import { Alert, Platform } from "react-native";
 
 const Playlist = () => {
   const router = useRouter();
@@ -103,7 +104,11 @@ const Playlist = () => {
                     setIncomingSong(null); // Clear incomingSong
                     Alert.alert("Song Added!", `Added to playlist "${updatedPlaylists[index].name}"`);
                   } else {
-                    Alert.alert("Already Exists", "This song is already in the selected playlist.");
+                    if (Platform.OS === 'web') {
+                        alert("This song is already in the selected playlist.");
+                      } else {
+                        Alert.alert("This song is already in the selected playlist.");
+                      }  
                   }
                 }
               }}
