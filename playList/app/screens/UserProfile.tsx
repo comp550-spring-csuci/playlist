@@ -32,7 +32,7 @@ const UserAccountScreen = () => {
       fetchUserProfile();
     }, []);
 
-
+    {/*To logout*/}
     const logout = async () => {
       console.log('Logout pressed');
       try {
