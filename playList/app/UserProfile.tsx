@@ -11,6 +11,9 @@ import { auth, db } from "@/services/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { signOut } from 'firebase/auth';
 import { useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+
+
 
 
 const UserAccountScreen = () => {
@@ -46,6 +49,12 @@ const UserAccountScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+
+      <TouchableOpacity onPress={() => router.push("/AppTabs")} style={styles.backButton}>
+          <Ionicons name="arrow-back" size={24} color="black" />
+      </TouchableOpacity>
+
+
       {/* Header + Divider */}
       <View style={styles.headerContainer}>
         <View style={styles.header}>
@@ -176,6 +185,13 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 16,
   },
+  backButton: {
+    position: "absolute",  
+    top: 10,               
+    left: 10,              
+    zIndex: 999,            
+  }
+  
 });
 
 
