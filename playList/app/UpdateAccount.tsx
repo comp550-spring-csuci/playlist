@@ -1,4 +1,4 @@
-import { Text, View, Image, TextInput, TouchableOpacity, Alert } from "react-native";
+import { Text, View, Image, TextInput, TouchableOpacity, Alert} from "react-native";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import MyButton from "@/components/MyButton";
@@ -68,7 +68,7 @@ const UpdateAccount = () => {
 
       setError("");
       //go back to user profile
-      router.back();
+      router.push("/UserProfile");
     } catch (error: any) {
       setError(error.message);
     }
@@ -76,12 +76,19 @@ const UpdateAccount = () => {
 
   return (
     //styling 
+
     <View style={styles.container}>
+
+      {/* X button */}
+      <TouchableOpacity style={styles.closeButton} onPress={() => router.push("/UserProfile")}>
+        <Text style={styles.closeButtonText}>✕</Text>
+      </TouchableOpacity>
+
       <View style={styles.header}>
         <Image source={require("@/assets/images/headphones2.gif")} style={styles.logoImage} />
         <Text style={styles.title}>Update Account</Text>
       </View>
-
+  
       <View style={styles.formContainer}>
         <TextInput
           placeholder="Full Name"
@@ -110,6 +117,7 @@ const UpdateAccount = () => {
         )}
         <MyButton title="SAVE" onPress={onSave} />
       </View>
+ 
     </View>
   );
 };
