@@ -273,6 +273,18 @@ searchInput: {
   shadowRadius: 2,
   elevation: 2, // for Android shadow
   color: "#333",
-}
+},
+
+// UpdateAccount X button
+ closeButton: {
+    position: "absolute",
+    top: 10,
+    right: 20,
+    zIndex: 999,
+  },
+  closeButtonText: {
+    fontSize: 24,
+    fontWeight: "bold",
+  }
 
 });
