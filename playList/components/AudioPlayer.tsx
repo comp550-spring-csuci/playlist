@@ -20,10 +20,17 @@ const AudioPlayer = ({
   const [progress, setProgress] = useState(0);
   const [expanded, setExpanded] = useState(false);
   const progressAnim = useRef(new Animated.Value(0)).current;
+  const intervalRef = useRef<NodeJS.Timer | null>(null);
 
   useEffect(() => {
     playSound();
-    return () => sound && sound.unloadAsync();
+    return () => {
+      if (intervalRef.current){
+        clearInterval(intervalRef.current);
+        intervalRef.current=null;
+      }
+      if (sound) {sound.unloadAsync();}
+    }
   }, [previewUrl]);
 
   const playSound = async () => {
@@ -35,6 +42,16 @@ const AudioPlayer = ({
     );
     setSound(newSound);
     setIsPlaying(true);
+  
+    intervalRef.current = setInterval(async () => {
+      const status = await newSound.getStatusAsync();
+      if (status.isLoaded && status.durationMillis) {
+        const position = status.positionMillis / status.durationMillis;
+        setProgress(position);
+        progressAnim.setValue(position);
+      }
+    },500);
+  
   };
 
   const onPlaybackStatusUpdate = (status) => {
@@ -59,10 +76,26 @@ const AudioPlayer = ({
     setIsPlaying(!isPlaying);
   };
 
+  const handleClose = async () => {
+    if (sound) {
+      await sound.stopAsync();
+      await sound.unloadAsync();
+      setSound(null);
+    }
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    setIsPlaying(false);
+    setProgress(0);
+    progressAnim.setValue(0);
+    onClose();
+  };
+
   return (
     <Animated.View style={[styles.container, expanded && styles.expanded]}>
       <View style={styles.headerRow}>
-        <TouchableOpacity onPress={onClose}>
+        <TouchableOpacity onPress={handleClose}>
           <Ionicons name="close" size={24} color="white" />
         </TouchableOpacity>
 
