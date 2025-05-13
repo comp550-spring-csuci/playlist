@@ -93,11 +93,11 @@ const Audiobooks = () => {
                   <Ionicons name="play-circle" size={28} color="#1DB954" />
                 </TouchableOpacity>
 
-                <TouchableOpacity
+                {/*<TouchableOpacity
                   //onPress={() => openModal(item.track)}
                 >
                   <Ionicons name="add-circle" size={28} color="#1DB954" />
-                </TouchableOpacity>
+                </TouchableOpacity>*/}
                 </TouchableOpacity>
               </View>
           )}

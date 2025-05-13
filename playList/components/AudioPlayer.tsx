@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Animated, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Audio } from 'expo-av';
+import { Audio, Video } from 'expo-av';
 
 const { width } = Dimensions.get('window');
 
@@ -20,21 +20,57 @@ const AudioPlayer = ({
   const [progress, setProgress] = useState(0);
   const [expanded, setExpanded] = useState(false);
   const progressAnim = useRef(new Animated.Value(0)).current;
+  const videoRef = useRef(null);
+
+  const isVideo = previewUrl.endsWith('.mp4') || previewUrl.includes('video');
 
   useEffect(() => {
-    playSound();
-    return () => sound && sound.unloadAsync();
+    let isMounted = true;
+
+    const loadMedia = async () => {
+      if (sound) {
+        await sound.unloadAsync();
+        setSound(null);
+      }
+
+      if (videoRef.current) {
+        try {
+          await videoRef.current.stopAsync();
+        } catch (e) {
+          console.warn("Video stop error:", e);
+        }
+      }
+
+      if (isVideo) {
+        setExpanded(true);
+        setIsPlaying(false); // Wait until playAsync confirms
+      } else {
+        await playSound();
+      }
+    };
+
+    if (isMounted) loadMedia();
+
+    return () => {
+      isMounted = false;
+      if (sound) sound.unloadAsync();
+      if (videoRef.current) videoRef.current.stopAsync();
+    };
   }, [previewUrl]);
 
   const playSound = async () => {
-    if (sound) await sound.unloadAsync();
-    const { sound: newSound } = await Audio.Sound.createAsync(
-      { uri: previewUrl },
-      { shouldPlay: true },
-      onPlaybackStatusUpdate
-    );
-    setSound(newSound);
-    setIsPlaying(true);
+    try {
+      const { sound: newSound } = await Audio.Sound.createAsync(
+        { uri: previewUrl },
+        { shouldPlay: true },
+        onPlaybackStatusUpdate
+      );
+      setSound(newSound);
+      const status = await newSound.getStatusAsync();
+      setIsPlaying(status.isPlaying);
+    } catch (error) {
+      console.error("Audio play error:", error);
+    }
   };
 
   const onPlaybackStatusUpdate = (status) => {
@@ -46,17 +82,46 @@ const AudioPlayer = ({
         duration: 500,
         useNativeDriver: false,
       }).start();
+      setIsPlaying(status.isPlaying);
     }
   };
 
   const togglePlayPause = async () => {
-    if (!sound) return;
-    if (isPlaying) {
-      await sound.pauseAsync();
-    } else {
-      await sound.playAsync();
+    try {
+      if (isVideo && videoRef.current) {
+        const status = await videoRef.current.getStatusAsync();
+        if (status.isPlaying) {
+          await videoRef.current.pauseAsync();
+        } else {
+          await videoRef.current.playAsync();
+        }
+        const updatedStatus = await videoRef.current.getStatusAsync();
+        setIsPlaying(updatedStatus.isPlaying);
+      } else if (sound) {
+        const status = await sound.getStatusAsync();
+        if (status.isPlaying) {
+          await sound.pauseAsync();
+        } else {
+          await sound.playAsync();
+        }
+        const updatedStatus = await sound.getStatusAsync();
+        setIsPlaying(updatedStatus.isPlaying);
+      }
+    } catch (error) {
+      console.error("Play/Pause error:", error);
     }
-    setIsPlaying(!isPlaying);
+  };
+
+  const handleVideoReady = async () => {
+    try {
+      if (videoRef.current) {
+        await videoRef.current.playAsync();
+        const status = await videoRef.current.getStatusAsync();
+        setIsPlaying(status.isPlaying);
+      }
+    } catch (err) {
+      console.error("Error autoplaying video:", err);
+    }
   };
 
   return (
@@ -76,6 +141,23 @@ const AudioPlayer = ({
         </TouchableOpacity>
       </View>
 
+      {expanded && isVideo && (
+        <Video
+          ref={videoRef}
+          source={{ uri: previewUrl }}
+          style={styles.videoPlayer}
+          useNativeControls={false}
+          resizeMode="contain"
+          shouldPlay={false}
+          onReadyForDisplay={handleVideoReady}
+          onPlaybackStatusUpdate={(status) => {
+            if (status.isLoaded) {
+              setIsPlaying(status.isPlaying);
+            }
+          }}
+        />
+      )}
+
       <View style={styles.controls}>
         <TouchableOpacity onPress={onPrevious} disabled={disablePrevious}>
           <Ionicons name="play-skip-back" size={36} color={disablePrevious ? "#555" : "white"} />
@@ -90,11 +172,13 @@ const AudioPlayer = ({
         </TouchableOpacity>
       </View>
 
-      <View style={styles.progressBarContainer}>
-        <Animated.View style={[styles.progressBar, {
-          width: progressAnim.interpolate({ inputRange: [0, 1], outputRange: [0, width - 40] })
-        }]} />
-      </View>
+      {!isVideo && (
+        <View style={styles.progressBarContainer}>
+          <Animated.View style={[styles.progressBar, {
+            width: progressAnim.interpolate({ inputRange: [0, 1], outputRange: [0, width - 40] })
+          }]} />
+        </View>
+      )}
     </Animated.View>
   );
 };
@@ -112,7 +196,7 @@ const styles = StyleSheet.create({
     elevation: 12,
   },
   expanded: {
-    height: 260,
+    height: 400,
   },
   headerRow: {
     flexDirection: 'row',
@@ -153,6 +237,12 @@ const styles = StyleSheet.create({
   progressBar: {
     height: 4,
     backgroundColor: '#1DB954',
+  },
+  videoPlayer: {
+    width: '100%',
+    height: 200,
+    marginTop: 20,
+    borderRadius: 12,
   },
 });
 
