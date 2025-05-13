@@ -10,12 +10,11 @@ import {
 import { auth, db } from "@/services/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { signOut } from 'firebase/auth';
-
 import { useRouter } from "expo-router";
 
 const UserAccountScreen = () => {
-  const [userData, setUserData] = useState<any>(null);
   const router = useRouter();
+  const [userData, setUserData] = useState<any>(null);
 
     useEffect(() => {
       const fetchUserProfile = async () => {

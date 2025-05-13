@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
-import { View, Text, TextInput, Image, FlatList, ActivityIndicator, TouchableOpacity, Platform, Linking, Modal } from "react-native";
+import { View, Text, TextInput, Image, FlatList, ActivityIndicator, TouchableOpacity, Platform, Linking, Modal, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { fetchSongs } from "../services/spotifyService";
-import { fetchCategories} from "../services/spotifyService";
+import { fetchSongs, fetchCategories } from "../services/spotifyService";
 import usePaginatedData from "../hooks/usePaginatedData";
 import { styles } from "@/styles/style";
 import AudioPlayer from "@/components/AudioPlayer";
-//import { importLyrics } from "../services/importLyrics";
+import Toast from 'react-native-toast-message';
 
 const Songs = () => {
   const router = useRouter();
@@ -18,6 +17,7 @@ const Songs = () => {
   const [selectedSong, setSelectedSong] = useState<any | null>(null);
   const [playlists, setPlaylists] = useState<any[]>([]);
   const [newPlaylistModalVisible, setNewPlaylistModalVisible] = useState(false);
+  const [existingPlaylistModalVisible, setExistingPlaylistModalVisible] = useState(false);
   const [newPlaylistName, setNewPlaylistName] = useState("");
   const [showFullName, setShowFullName] = useState(false);
   const [categories, setCategories] = useState([]);
@@ -41,13 +41,13 @@ const Songs = () => {
   );
 
   useEffect(() => {
-  const loadPlaylistsFromStorage = async () => {
-    const storedPlaylists = await AsyncStorage.getItem("playlists");
-    if (storedPlaylists) {
-      setPlaylists(JSON.parse(storedPlaylists));
+  const loadPlaylists = async () => {
+    const stored = await AsyncStorage.getItem("playlists");
+    if (stored) {
+      setPlaylists(JSON.parse(stored));
     }
   };
-  loadPlaylistsFromStorage();
+  loadPlaylists();
     }, []);
 
   useEffect(() => {
@@ -58,21 +58,29 @@ const Songs = () => {
       loadCategories();
   }, []);
 
+  const savePlaylists = async (updated) => {
+      await AsyncStorage.setItem("playlists", JSON.stringify(updated));
+      setPlaylists(updated);
+    };
+
   const openModal = (song: any) => {
     setSelectedSong(song);
     setModalVisible(true);
   };
 
-  const closeModal = () => {
+  const closeAllModals = () => {
     setModalVisible(false);
+    setNewPlaylistModalVisible(false);
+    setExistingPlaylistModalVisible(false);
     setSelectedSong(null);
   };
-  const savePlaylists = async (updatedPlaylists: any[]) => {
+
+  /*const savePlaylists = async (updatedPlaylists: any[]) => {
     await AsyncStorage.setItem("playlists", JSON.stringify(updatedPlaylists));
     setPlaylists(updatedPlaylists);
-  };
+  };*/
 
-  const handleCreatePlaylist = () => {
+  /*const handleCreatePlaylist = () => {
     const newPlaylist = {
       name: newPlaylistName,
       songs: [selectedSong],
@@ -83,27 +91,61 @@ const Songs = () => {
     setNewPlaylistModalVisible(false);
     setNewPlaylistName("");
     closeModal();
-    router.push("/playlist");
-  };
+    // router.push("/playlist");
+    Toast.show({
+      type: 'success',
+      text1: `Added Successfully to ${newPlaylistName}.`,
+    });
+  };*/
+  const handleCreatePlaylist = () => {
+      const exists = playlists.some(p => p.name.toLowerCase() === newPlaylistName.toLowerCase());
+      if (exists) {
+        Toast.show({ type: 'error', text1: 'Playlist already exists.' });
+        return;
+      }
+
+      const newPlaylist = { name: newPlaylistName, songs: [selectedSong] };
+      const updated = [...playlists, newPlaylist];
+      savePlaylists(updated);
+      Toast.show({ type: 'success', text1: `Created ${newPlaylistName}`, text2: 'Song added.' });
+      closeAllModals();
+    };
+
+    const handleAddToExisting = (playlistIndex) => {
+      const updated = [...playlists];
+      const playlist = updated[playlistIndex];
+
+      const alreadyIn = playlist.songs.some(song => song.id === selectedSong.id);
+      if (alreadyIn) {
+        Toast.show({ type: 'info', text1: 'Song already in playlist' });
+      } else {
+        playlist.songs.push(selectedSong);
+        savePlaylists(updated);
+        Toast.show({ type: 'success', text1: `Added to ${playlist.name}` });
+      }
+
+      closeAllModals();
+    };
+
 
   const toggleName = () => {
        setShowFullName(!showFullName);
      };
-	 
-  const handleLyricsPress = async (artist: string, title: string) => {
-	const result = encodeURIComponent(`${artist} ${title}`);
-	const geniusUrl = `https://genius.com/search?q=${result}`
 
-	if (Platform.OS === "web") {
-		window.open(geniusUrl, "_blank");
-	} else {
-		setLyricsContent("View full lyrics on Genius.");
-		setLyricsUrl(geniusUrl);
-		setLyricsModalVisible(true);
-	}
+  const handleLyricsPress = async (artist: string, title: string) => {
+    const result = encodeURIComponent(`${artist} ${title}`);
+    const geniusUrl = `https://genius.com/search?q=${result}`;
+
+    if (Platform.OS === "web") {
+        window.open(geniusUrl, "_blank");
+    } else {
+        setLyricsContent("View full lyrics on Genius.");
+        setLyricsUrl(geniusUrl);
+        setLyricsModalVisible(true);
+    }
   };
 
-	if (songs.length === 0 && !isFetchingMore) {
+    if (songs.length === 0 && !isFetchingMore) {
       return (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#1DB954" />
@@ -206,11 +248,12 @@ const Songs = () => {
             >
               <Ionicons name="add-circle" size={28} color="#1DB954" />
             </TouchableOpacity>
-			<TouchableOpacity 
-			  onPress={() => handleLyricsPress(item.artists[0].name, item.name)}
-			>
-			  <Ionicons name="document-text" size={24} color="#1DB954" />
-			</TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => handleLyricsPress(item.artists[0].name, item.name)}
+            >
+              <Ionicons name="document-text" size={24} color="#1DB954" />
+            </TouchableOpacity>
           </View>
         )}
         onEndReached={hasMore ? fetchMoreSongs : null}
@@ -227,11 +270,12 @@ const Songs = () => {
       />
     )}
 
+      {/* Main Playlist Modal */}
       <Modal
         transparent={true}
         visible={modalVisible}
         animationType="fade"
-        onRequestClose={closeModal}
+
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
@@ -239,14 +283,8 @@ const Songs = () => {
             <TouchableOpacity
               style={styles.modalButton}
               onPress={() => {
-                // TODO: Add to Existing Playlist
-                closeModal();
-                router.push({
-                    pathname: "/playlist",
-                    params: {
-                      songToAdd: JSON.stringify(selectedSong), // Serialize for navigation
-                    },
-                  });
+                setModalVisible(false);
+                setExistingPlaylistModalVisible(true);
               }}
             >
               <Text style={styles.modalButtonText}>Existing Playlist</Text>
@@ -261,12 +299,14 @@ const Songs = () => {
   <Text style={styles.modalButtonText}>New Playlist</Text>
     </TouchableOpacity>
 
-            <TouchableOpacity onPress={closeModal}>
+            <TouchableOpacity onPress={closeAllModals}>
               <Text style={styles.modalCancelText}>Cancel</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
+
+      {/* New Playlist Modal */}
       <Modal
   transparent={true}
   visible={newPlaylistModalVisible}
@@ -285,15 +325,36 @@ const Songs = () => {
       <TouchableOpacity style={styles.modalButton} onPress={handleCreatePlaylist}>
         <Text style={styles.modalButtonText}>Create</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => setNewPlaylistModalVisible(false)}>
+      <TouchableOpacity onPress={closeAllModals}>
         <Text style={styles.modalCancelText}>Cancel</Text>
       </TouchableOpacity>
     </View>
   </View>
- 
   </Modal>
-  
-  {/* Lyrics Modal */}
+
+  {/* Existing Playlist Modal */}
+<Modal transparent visible={existingPlaylistModalVisible} animationType="slide">
+  <View style={styles.modalOverlay}>
+    <View style={styles.modalContent}>
+      <Text style={styles.modalTitle}>Select Playlist</Text>
+      {playlists.map((playlist, index) => (
+        <TouchableOpacity
+          key={index}
+          style={styles.modalButton}
+          onPress={() => handleAddToExisting(index)}
+        >
+          <Text style={styles.modalButtonText}>{playlist.name}</Text>
+        </TouchableOpacity>
+      ))}
+      <TouchableOpacity onPress={closeAllModals}>
+        <Text style={styles.modalCancelText}>Cancel</Text>
+      </TouchableOpacity>
+    </View>
+  </View>
+</Modal>
+
+
+  {/* Lyrics Modal*/}
       <Modal transparent visible={lyricsModalVisible} animationType="slide" onRequestClose={() => setLyricsModalVisible(false)}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
@@ -312,6 +373,7 @@ const Songs = () => {
         </View>
       </Modal>
 
+    {/* Toast Message Display is handled globally in _layout.tsx */}
     {previewUrl && activeSong && (
       <AudioPlayer
         previewUrl={previewUrl}
