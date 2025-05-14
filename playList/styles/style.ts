@@ -275,16 +275,5 @@ searchInput: {
   color: "#333",
 },
 
-// UpdateAccount X button
- closeButton: {
-    position: "absolute",
-    top: 10,
-    right: 20,
-    zIndex: 999,
-  },
-  closeButtonText: {
-    fontSize: 24,
-    fontWeight: "bold",
-  }
 
 });
