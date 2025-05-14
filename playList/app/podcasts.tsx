@@ -1,15 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
-import {
-  View,
-  Text,
-  FlatList,
-  Image,
-  ActivityIndicator,
-  TouchableOpacity,
-  Linking,
-  TextInput,
-} from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { View, Text, FlatList, Image, ActivityIndicator, TouchableOpacity, Linking, TextInput } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Picker } from "@react-native-picker/picker"; //for category selection
@@ -141,25 +132,25 @@ const Podcasts = () => {
                   <Ionicons name="play-circle" size={28} color="#1DB954" />
                 </TouchableOpacity>
 
-                <TouchableOpacity>
+                {/*<TouchableOpacity
+                  //onPress={() => openModal(item.track)}
+                >
                   <Ionicons name="add-circle" size={28} color="#1DB954" />
+                </TouchableOpacity>*/}
                 </TouchableOpacity>
-              </TouchableOpacity>
-            </View>
-          )}
-          onEndReached={hasMore ? fetchMorePodcasts : null}
-          onEndReachedThreshold={0.1}
-          ListFooterComponent={
-            isFetchingMore ? (
-              <ActivityIndicator size="small" color="#1DB954" />
-            ) : !hasMore ? (
-              <Text
-                style={{ textAlign: "center", padding: 10, color: "gray" }}
-              >
-                No more podcasts
-              </Text>
-            ) : null
-          }
+              </View>
+		  )}
+        onEndReached={hasMore ? fetchMorePodcasts : null}
+        onEndReachedThreshold={0.1}
+        ListFooterComponent={
+          isFetchingMore ? (
+            <ActivityIndicator size="small" color="#1DB954" />
+          ) : !hasMore ? (
+            <Text style={{ textAlign: "center", padding: 10, color: "gray" }}>
+              No more songs
+            </Text>
+          ) : null
+        }
         />
       )}
     </SafeAreaView>

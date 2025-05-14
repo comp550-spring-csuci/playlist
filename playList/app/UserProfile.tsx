@@ -17,8 +17,8 @@ import { Ionicons } from "@expo/vector-icons";
 
 
 const UserAccountScreen = () => {
-  const [userData, setUserData] = useState<any>(null);
   const router = useRouter();
+  const [userData, setUserData] = useState<any>(null);
 
     useEffect(() => {
       const fetchUserProfile = async () => {
