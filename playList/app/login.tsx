@@ -18,7 +18,7 @@ const Login = () => {
       setError("");
       router.navigate("/AppTabs");
     } catch (error) {
-      setError("Login failed: " + error.message);
+      setError("Login failed: " + (error as Error).message);
     }
   };
 
