@@ -6,18 +6,29 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { styles } from "@/styles/style";
 import TabNavigator from './TabNavigator';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { auth, db } from "@/services/firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 const Dashboard:React.FC = () => {
   const [fullName, setFullName] = useState("there");
 
+  {/*fetch user's name from firestore
+    to display a greeting to the user*/}
   useEffect(() => {
+      
       const fetchUserName = async () => {
-        const name = await AsyncStorage.getItem("fullName");
-        console.log("Fetched fullName from storage:", name);
-        if (name) setFullName(name);
-      };
-      fetchUserName();
+        const user = auth.currentUser;
+        if (!user) return;
+
+        const userRef = doc(db, "users", user.uid);
+        const userSnap = await getDoc(userRef);
+        if (userSnap.exists()) {
+          const data = userSnap.data();
+          setFullName(data.fullName);
+        }
+      }; fetchUserName();
     }, []);
+
   const getGreeting = () => {
   	const hour = new Date().getHours();
   	const greeting =
