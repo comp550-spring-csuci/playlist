@@ -273,6 +273,7 @@ searchInput: {
   shadowRadius: 2,
   elevation: 2, // for Android shadow
   color: "#333",
-}
+},
+
 
 });

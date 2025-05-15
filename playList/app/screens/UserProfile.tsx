@@ -6,90 +6,186 @@ import {
   Image,
   TouchableOpacity,
   SafeAreaView,
+  TextInput,
+  Alert,
 } from 'react-native';
 import { auth, db } from "@/services/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { signOut } from 'firebase/auth';
 import { useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+
+
 
 const UserAccountScreen = () => {
   const router = useRouter();
   const [userData, setUserData] = useState<any>(null);
+  const [editing, setEditing] = useState(false);
+  const [formData, setFormData] = useState({ fullName: '', email: '', phone: '' });
 
-    useEffect(() => {
-      const fetchUserProfile = async () => {
-        const user = auth.currentUser;
-        if (user) {
-          const userRef = doc(db, "users", user.uid);
-          const docSnap = await getDoc(userRef);
-          if (docSnap.exists()) {
-            setUserData(docSnap.data());
-          }
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      const user = auth.currentUser;
+      if (user) {
+        const userRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(userRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setUserData(data);
+          setFormData({
+            fullName: data.fullName || '',
+            email: data.email || '',
+            phone: data.phone || '',
+          });
         }
-      };
-
-      fetchUserProfile();
-    }, []);
-
-
-    const logout = async () => {
-      console.log('Logout pressed');
-      try {
-        await signOut(auth);
-        router.navigate("../login");
-      } catch (error) {
-        console.error('Logout Error:', error);
       }
     };
+
+    fetchUserProfile();
+  }, []);
+
+  {/*To logout*/}
+  const logout = async () => {
+    try {
+      await signOut(auth);
+      router.navigate("../login");
+    } catch (error) {
+      console.error('Logout Error:', error);
+    }
+  };
+
+  {/*for saving updated formData fields*/}
+  const handleSave = async () => {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  try {
     
+    //log data to check user data that is being updated
+    console.log("User data to update:", formData);
+
+    //update user data in Firestore
+    const userRef = doc(db, "users", user.uid);
+    await updateDoc(userRef, {
+      fullName: formData.fullName,
+      email: formData.email,
+      phone: formData.phone,
+    });
+
+    //update userData with formData values
+    setUserData({
+      fullName: formData.fullName,
+      email: formData.email,
+      phone: formData.phone
+    });
+
+    //change to uneditable state
+    setEditing(false);  
+
+  } catch (error: any) {
+    console.error("Error when updating account details:", error);
+    Alert.alert("Error", error.message);
+  }
+};
+
+  {/*reset form back to the values in the previous fields,
+     change editing state to false to go back to 
+     prior UI */}
+  const handleCancel = () => {
+    setFormData({
+      fullName: userData?.fullName || '',
+      email: userData?.email || '',
+      phone: userData?.phone || '',
+    });
+    setEditing(false);
+  };
+
+  {/*update formData fields*/}
+  const handleChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header + Divider */}
+      <TouchableOpacity onPress={() => router.push("/AppTabs")} style={styles.backButton}>
+        <Ionicons name="arrow-back" size={24} color="black" />
+      </TouchableOpacity>
+
       <View style={styles.headerContainer}>
         <View style={styles.header}>
-        <Image
-          source={require("@/assets/images/myicon.png")}
-          style={styles.icon}
-        />
+          <Image
+            source={require("@/assets/images/myicon.png")}
+            style={styles.icon}
+          />
           <Text style={styles.headerText}>User Account</Text>
         </View>
         <View style={styles.divider} />
       </View>
 
-      {/* User Profile Card */}
       <View style={styles.profileCard}>
-        <Image 
-            source={require("@/assets/images/userProfileImage.jpg")} 
-            style={styles.profileImage} />
-        <View style={styles.profileDetails}>
-          <Text style={styles.detailLabel}>Name:</Text>
-          <Text style={styles.detailValue}>{userData?.fullName || "Loading..."}</Text>
+        <Image
+          source={require("@/assets/images/userProfileImage.jpg")}
+          style={styles.profileImage}
+        />
+      {/*profile details editable or uneditable 
+        dependent upon editing state */}
+      <View style={styles.profileDetails}>
+        <Text style={styles.detailLabel}>Name:</Text>
+        {editing ? (
+          <TextInput
+            style={styles.input}
+            value={formData.fullName}
+            onChangeText={(text) => handleChange('fullName', text)}
+        />
+      ) : (
+      <Text style={styles.detailValue}>{userData?.fullName || "Loading..."}</Text>
+      )}
 
-          <Text style={styles.detailLabel}>Email:</Text>
-          <Text style={styles.detailValue}>{userData?.email || "Loading..."}</Text>
+     {/*email to be kept uneditable*/}
+     <Text style={styles.detailLabel}>Email:</Text>
+     <Text style={styles.detailValue}>{userData?.email || "Loading..."}</Text>
 
-          <Text style={styles.detailLabel}>Phone:</Text>
-          <Text style={styles.detailValue}>{userData?.phone || "Loading..."}</Text>
-        </View>
-      </View>
+      <Text style={styles.detailLabel}>Phone:</Text>
+        {editing ? (
+          <TextInput
+            style={styles.input}
+            value={formData.phone}
+            onChangeText={(text) => handleChange('phone', text)}
+            keyboardType="phone-pad"
+        />
+      ) : (
+      <Text style={styles.detailValue}>{userData?.phone || "Loading..."}</Text>
+    )}
+    </View>
+     </View>
 
-      {/* Update and Log Out Buttons */}
       <View style={styles.buttonRow}>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Update Account</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={logout}>
-          <Text style={styles.buttonText}>Log Out</Text>
-        </TouchableOpacity>
+        {/*buttons dependent upon editing state */}
+        {editing ? (
+          <>
+            <TouchableOpacity style={styles.button} onPress={handleSave}>
+              <Text style={styles.buttonText}>Save</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={handleCancel}>
+              <Text style={styles.buttonText}>Cancel</Text>
+            </TouchableOpacity>
+          </>
+        ) : (
+          <>
+            <TouchableOpacity style={styles.button} onPress={() => setEditing(true)}>
+              <Text style={styles.buttonText}>Update Account</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={logout}>
+              <Text style={styles.buttonText}>Log Out</Text>
+            </TouchableOpacity>
+          </>
+        )}
       </View>
     </SafeAreaView>
   );
 };
 
 export default UserAccountScreen;
-
-
 
 const styles = StyleSheet.create({
   container: {
@@ -133,12 +229,12 @@ const styles = StyleSheet.create({
     padding: 20,
     alignSelf: 'center',
     width: '90%',
-    height: 160,
+    height: 200,
     marginBottom: 20,
   },
   profileImage: {
-    width: 100,
-    height: 100,
+    width: 120,
+    height: 120,
     borderRadius: 12,
     marginRight: 20,
     backgroundColor: '#ccc',
@@ -175,6 +271,21 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 16,
   },
+  backButton: {
+    position: "absolute",  
+    top: 10,               
+    left: 10,              
+    zIndex: 999,            
+  },
+  input: {
+  fontSize: 16,
+  borderBottomWidth: 1,
+  borderBottomColor: '#888',
+  marginBottom: 10,
+  paddingVertical: 4,
+}
+
+  
 });
 
 
